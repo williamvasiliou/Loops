@@ -175,11 +175,11 @@ void delete(pair *first) {
 }
 
 #define PRINT(name)							\
-	printf("(");							\
+	fputc('(', stdout);						\
 	print(item->first);						\
-	printf(" " #name " ");						\
+	fputs(" " #name " ", stdout);					\
 	print(item->second);						\
-	printf(")");
+	fputc(')', stdout)
 
 void print(const pair *item) {
 	switch (item->is) {
@@ -224,3 +224,28 @@ void pop(pair *item, const uint8_t *in) {
 			return;
 	}
 }
+
+uint8_t in[SIZE] = {};
+uint8_t out[SIZE] = {};
+uint8_t first[SIZE] = {};
+uint8_t second[SIZE] = {};
+uint8_t sum[SIZE] = {};
+
+struct first {
+	char *in;
+	char *out;
+	char *name;
+	size_t index;
+	size_t next;
+	size_t size;
+};
+
+struct second {
+	uint8_t in[SIZE];
+	uint8_t out[SIZE];
+	uint8_t first[SIZE];
+	uint8_t second[SIZE];
+	bool name;
+	bool next;
+	char *value;
+};
