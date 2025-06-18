@@ -605,3 +605,10 @@ bool get(FILE *stream, const struct first **first, const struct second *second, 
 
 	return false;
 }
+
+struct index {
+	struct first **first;
+	const struct second *second;
+	size_t size;
+	size_t sum;
+};
