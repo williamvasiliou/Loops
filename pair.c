@@ -612,3 +612,482 @@ struct index {
 	size_t size;
 	size_t sum;
 };
+
+char *line(const char *name) {
+	char *line = (char *) NULL;
+	size_t size = 0;
+
+	fputs(name, stdout);
+	ssize_t nread = getline(&line, &size, stdin);
+
+	if (nread < 1) {
+		free(line);
+		return (char *) NULL;
+	}
+
+	while (nread < 2) {
+		fputs(name, stdout);
+		nread = getline(&line, &size, stdin);
+
+		if (nread < 1) {
+			free(line);
+			return (char *) NULL;
+		}
+	}
+
+	line[nread - 1] = 0;
+	return line;
+}
+
+size_t number(const char *name) {
+	char *index = line(name);
+
+	if (index) {
+		if (*index) {
+			char *value = (char *) NULL;
+			size_t size = strtoul(index, &value, 10);
+
+			while (*value) {
+				free(index);
+				index = line(name);
+				if (index) {
+					if (*index) {
+						value = (char *) NULL;
+						size = strtoul(index, &value, 10);
+					}
+				} else {
+					return 0;
+				}
+			}
+
+			free(index);
+			return size;
+		}
+
+		free(index);
+	}
+
+	return 0;
+}
+
+bool array(struct index *index) {
+	const size_t sum = index->sum;
+	if (index->size < sum) {
+		return true;
+	} else {
+		struct first **first = reallocarray(index->first, 2 * sum, sizeof(struct first *));
+		if (first) {
+			index->first = first;
+			index->sum *= 2;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void add(struct index *index) {
+	if (array(index)) {
+		struct first *first = (struct first *) calloc(1, sizeof(struct first));
+		if (!first) {
+			return;
+		}
+
+		first->in = line("In: ");
+		if (!first->in) {
+			free(first);
+			return;
+		}
+
+		first->out = line("Out: ");
+		if (!first->out) {
+			free(first->in);
+			free(first);
+			return;
+		}
+
+		if (index->second->name) {
+			if (index->second->next) {
+				first->name = index->second->value;
+			} else {
+				first->name = line("Name: ");
+			}
+
+			if (!first->name) {
+				free(first->in);
+				free(first->out);
+				free(first);
+				return;
+			}
+		}
+
+		first->index = number("Index: ");
+		first->next = number("Next: ");
+		first->size = number("Size: ");
+
+		if (first->next < SIZE && first->size > 0) {
+			bool in = true;
+			const size_t next = first->next;
+			const size_t size = index->size;
+			for (size_t i = 0; i < size; ++i) {
+				const struct first *first = index->first[i];
+				const size_t index = first->next;
+				const size_t value = index + first->size;
+				if (index <= next && next < value) {
+					in = false;
+					break;
+				}
+			}
+
+			if (in) {
+				size_t value = SIZE - next;
+				for (size_t i = 0; i < size; ++i) {
+					const struct first *first = index->first[i];
+					const size_t index = first->next;
+					if (index > next) {
+						value = index - next;
+						break;
+					}
+				}
+
+				if (first->size <= value) {
+					index->first[size] = first;
+					size_t i = size;
+					while (i > 0) {
+						struct first *second = index->first[i - 1];
+						if (second->next > next) {
+							index->first[i] = second;
+							index->first[--i] = first;
+						} else {
+							break;
+						}
+					}
+
+					++index->size;
+					return;
+				}
+			}
+		}
+
+		free(first->in);
+		free(first->out);
+		if (index->second->name && !index->second->next) {
+			free(first->name);
+		}
+		free(first);
+	}
+}
+
+void erase(struct index *index, size_t next) {
+	const size_t size = index->size;
+	if (next < size) {
+		while (++next < size) {
+			struct first *second = index->first[next];
+			index->first[next] = index->first[next - 1];
+			index->first[next - 1] = second;
+		}
+
+		struct first *first = index->first[--index->size];
+		free(first->in);
+		free(first->out);
+		if (index->second->name && !index->second->next) {
+			free(first->name);
+		}
+		free(first);
+	}
+}
+
+void list(const struct index *index) {
+	if (index->second->name) {
+		if (index->second->next) {
+			printf("Name: %s\n", index->second->value);
+			fputs("In\tOut\tIndex\tStart\tEnd\tSize\n", stdout);
+			for (size_t i = 0; i < index->size; ++i) {
+				const struct first *first = index->first[i];
+				printf("%s\t%s\t%zu\t%zu\t%zu\t%zu\n", first->in, first->out, first->index, first->next, first->next + first->size - 1, first->size);
+			}
+		} else {
+			fputs("In\tOut\tName\tIndex\tStart\tEnd\tSize\n", stdout);
+			for (size_t i = 0; i < index->size; ++i) {
+				const struct first *first = index->first[i];
+				printf("%s\t%s\t%s\t%zu\t%zu\t%zu\t%zu\n", first->in, first->out, first->name, first->index, first->next, first->next + first->size - 1, first->size);
+			}
+		}
+	} else {
+		fputs("In\tOut\tIndex\tStart\tEnd\tSize\n", stdout);
+		for (size_t i = 0; i < index->size; ++i) {
+			const struct first *first = index->first[i];
+			printf("%s\t%s\t%zu\t%zu\t%zu\t%zu\n", first->in, first->out, first->index, first->next, first->next + first->size - 1, first->size);
+		}
+	}
+}
+
+void resize(struct index *index, size_t i, size_t next, size_t size) {
+	if (i < index->size && next < SIZE && size > 0) {
+		for (size_t j = 0; j < i; ++j) {
+			const struct first *first = index->first[j];
+			const size_t index = first->next;
+			const size_t value = index + first->size;
+			if (index <= next && next < value) {
+				return;
+			}
+		}
+
+		for (size_t j = i + 1; j < index->size; ++j) {
+			const struct first *first = index->first[j];
+			const size_t index = first->next;
+			const size_t value = index + first->size;
+			if (index <= next && next < value) {
+				return;
+			}
+		}
+
+		size_t value = SIZE - next;
+		for (size_t j = 0; j < index->size; ++j) {
+			const struct first *first = index->first[j];
+			const size_t index = first->next;
+			if (index > next) {
+				if (i == j) {
+					continue;
+				}
+
+				value = index - next;
+				break;
+			}
+		}
+
+		if (size > value) {
+			return;
+		}
+
+		struct first *first = index->first[i];
+		first->next = next;
+		first->size = size;
+
+		while (i > 0 && index->first[i - 1]->next > next) {
+			index->first[i] = index->first[i - 1];
+			index->first[--i] = first;
+		}
+
+		const size_t size = index->size - 1;
+		while (i < size && index->first[i + 1]->next < next) {
+			index->first[i] = index->first[i + 1];
+			index->first[++i] = first;
+		}
+	}
+}
+
+void tell(const struct index *index) {
+	const size_t size = index->size;
+	fputs("Start\tEnd\tSize\n", stdout);
+	if (size > 0) {
+		const size_t value = index->first[0]->next;
+		if (value > 0) {
+			printf("0\t%zu\t%zu\n", value - 1, value);
+		}
+
+		size_t i = 0;
+		while (++i < size) {
+			const struct first *first = index->first[i - 1];
+			const size_t next = index->first[i]->next;
+			const size_t value = first->next + first->size;
+			if (next > value) {
+				printf("%zu\t%zu\t%zu\n", value, next - 1, next - value);
+			}
+		}
+
+		const struct first *first = index->first[--i];
+		const size_t next = first->next + first->size;
+		if (next < SIZE) {
+			printf("%zu\t%zu\t%zu\n", next, (size_t) SIZE - 1, (size_t) SIZE - next);
+		}
+	} else {
+		printf("0\t%zu\t%zu\n", (size_t) SIZE - 1, (size_t) SIZE);
+	}
+}
+
+void quit(const struct index *index) {
+	if (index->second->name) {
+		if (index->second->next) {
+			for (size_t i = 0; i < index->size; ++i) {
+				struct first *first = index->first[i];
+
+				free(first->in);
+				free(first->out);
+				free(first);
+			}
+
+			free(index->second->value);
+		} else {
+			for (size_t i = 0; i < index->size; ++i) {
+				struct first *first = index->first[i];
+
+				free(first->in);
+				free(first->out);
+				free(first->name);
+				free(first);
+			}
+		}
+	} else {
+		for (size_t i = 0; i < index->size; ++i) {
+			struct first *first = index->first[i];
+
+			free(first->in);
+			free(first->out);
+			free(first);
+		}
+	}
+
+	free(index->first);
+}
+
+int main() {
+	fputs("  Create a new label\n", stdout);
+	fputs("   g   create empty\n", stdout);
+	fputs("   G   create primary\n", stdout);
+	fputs("   o   create extended\n\n", stdout);
+
+	char *line = (char *) NULL;
+	size_t size = 0;
+
+	fputs("Command (m for help): ", stdout);
+	ssize_t nread = getline(&line, &size, stdin);
+
+	if (nread < 1) {
+		free(line);
+		exit(EXIT_FAILURE);
+	}
+
+	while (nread != 2) {
+		fputs("Command (m for help): ", stdout);
+		nread = getline(&line, &size, stdin);
+
+		if (nread < 1) {
+			free(line);
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	struct second second;
+	struct index index = {
+		.first = (struct first **) calloc(1, sizeof(struct first *)),
+		.second = &second,
+		.size = 0,
+		.sum = 1,
+	};
+
+	if (!index.first) {
+		free(line);
+		exit(EXIT_FAILURE);
+	}
+
+	switch (*line) {
+		case 'g':
+			second.name = false;
+			second.next = false;
+			second.value = (char *) NULL;
+			break;
+		case 'G':
+			second.name = true;
+			second.next = true;
+			second.value = (char *) NULL;
+
+			fputs("Name: ", stdout);
+			size = 0;
+			nread = getline(&second.value, &size, stdin);
+
+			if (nread > 0) {
+				second.value[nread - 1] = 0;
+			} else {
+				free(line);
+				free(index.first);
+				free(second.value);
+				exit(EXIT_FAILURE);
+			}
+			break;
+		case 'o':
+			second.name = true;
+			second.next = false;
+			second.value = (char *) NULL;
+			break;
+		default:
+			second.name = false;
+			second.next = false;
+			second.value = (char *) NULL;
+			break;
+	}
+
+	free(line);
+	line = (char *) NULL;
+	size = 0;
+	while (nread > 0) {
+		fputs("\nCommand (m for help): ", stdout);
+		nread = getline(&line, &size, stdin);
+
+		if (nread == 2) {
+			switch (*line) {
+				case 'd':
+					if (index.size > 0) {
+						erase(&index, number("Index: "));
+					}
+					break;
+				case 'e':
+					if (index.size > 0) {
+						const size_t item = number("Index: ");
+						const size_t next = number("Next: ");
+						const size_t size = number("Size: ");
+						resize(&index, item, next, size);
+					}
+					break;
+				case 'F':
+					tell(&index);
+					break;
+				case 'm':
+					fputs("\nHelp:\n\n", stdout);
+					fputs("   d   delete a partition\n", stdout);
+					fputs("   e   resize a partition\n", stdout);
+					fputs("   F   list free unpartitioned space\n", stdout);
+					fputs("   m   print this menu\n", stdout);
+					fputs("   n   add a new partition\n", stdout);
+					fputs("   p   print the partition table\n", stdout);
+					fputs("   q   quit without saving changes\n", stdout);
+					fputs("   w   write table to disk and exit\n", stdout);
+					break;
+				case 'n':
+					add(&index);
+					break;
+				case 'p':
+					list(&index);
+					break;
+				case 'q':
+					nread = 0;
+					break;
+				case 'w':
+					nread = getline(&line, &size, stdin);
+					if (nread > 1) {
+						line[nread - 1] = 0;
+						FILE *stream = fopen(line, "w");
+						if (stream) {
+							for (size_t i = 0; i < SIZE; ++i) {
+								second.in[i] = byte();
+								second.out[i] = byte();
+								second.first[i] = byte();
+								second.second[i] = byte();
+								sum[i] = byte();
+							}
+
+							get(stream, (const struct first **) index.first, index.second, index.size);
+							fclose(stream);
+						}
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	free(line);
+	quit(&index);
+	exit(EXIT_SUCCESS);
+}
