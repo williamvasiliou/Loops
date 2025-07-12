@@ -675,7 +675,7 @@ bool array(struct index *index) {
 	if (index->size < sum) {
 		return true;
 	} else {
-		struct first **first = reallocarray(index->first, 2 * sum, sizeof(struct first *));
+		struct first **first = (struct first **) reallocarray(index->first, 2 * sum, sizeof(struct first *));
 		if (first) {
 			index->first = first;
 			index->sum *= 2;
@@ -942,33 +942,73 @@ void quit(const struct index *index) {
 }
 
 int main() {
+	struct second second;
+
 	fputs("  Create a new label\n", stdout);
 	fputs("   g   create empty\n", stdout);
 	fputs("   G   create primary\n", stdout);
-	fputs("   o   create extended\n\n", stdout);
+	fputs("   o   create extended\n", stdout);
 
 	char *line = (char *) NULL;
 	size_t size = 0;
 
-	fputs("Command (m for help): ", stdout);
-	ssize_t nread = getline(&line, &size, stdin);
+	ssize_t nread = 1;
+	while (nread > 0) {
+		while (nread != 2) {
+			fputs("\nCommand (m for help): ", stdout);
+			nread = getline(&line, &size, stdin);
 
-	if (nread < 1) {
-		free(line);
-		exit(EXIT_FAILURE);
-	}
+			if (nread < 1) {
+				free(line);
+				exit(EXIT_FAILURE);
+			}
+		}
 
-	while (nread != 2) {
-		fputs("Command (m for help): ", stdout);
-		nread = getline(&line, &size, stdin);
+		switch (*line) {
+			case 'g':
+				second.name = false;
+				second.next = false;
+				second.value = (char *) NULL;
+				nread = 0;
+				break;
+			case 'G':
+				second.name = true;
+				second.next = true;
+				second.value = (char *) NULL;
 
-		if (nread < 1) {
-			free(line);
-			exit(EXIT_FAILURE);
+				fputs("Name: ", stdout);
+				size = 0;
+				nread = getline(&second.value, &size, stdin);
+
+				if (nread > 0) {
+					second.value[nread - 1] = 0;
+					nread = 0;
+				} else {
+					free(line);
+					free(second.value);
+					exit(EXIT_FAILURE);
+				}
+				break;
+			case 'm':
+				fputs("\nHelp:\n\n", stdout);
+				fputs("  Create a new label\n", stdout);
+				fputs("   g   create empty\n", stdout);
+				fputs("   G   create primary\n", stdout);
+				fputs("   o   create extended\n", stdout);
+				nread = 1;
+				break;
+			case 'o':
+				second.name = true;
+				second.next = false;
+				second.value = (char *) NULL;
+				nread = 0;
+				break;
+			default:
+				nread = 1;
+				break;
 		}
 	}
 
-	struct second second;
 	struct index index = {
 		.first = (struct first **) calloc(1, sizeof(struct first *)),
 		.second = &second,
@@ -979,42 +1019,6 @@ int main() {
 	if (!index.first) {
 		free(line);
 		exit(EXIT_FAILURE);
-	}
-
-	switch (*line) {
-		case 'g':
-			second.name = false;
-			second.next = false;
-			second.value = (char *) NULL;
-			break;
-		case 'G':
-			second.name = true;
-			second.next = true;
-			second.value = (char *) NULL;
-
-			fputs("Name: ", stdout);
-			size = 0;
-			nread = getline(&second.value, &size, stdin);
-
-			if (nread > 0) {
-				second.value[nread - 1] = 0;
-			} else {
-				free(line);
-				free(index.first);
-				free(second.value);
-				exit(EXIT_FAILURE);
-			}
-			break;
-		case 'o':
-			second.name = true;
-			second.next = false;
-			second.value = (char *) NULL;
-			break;
-		default:
-			second.name = false;
-			second.next = false;
-			second.value = (char *) NULL;
-			break;
 	}
 
 	free(line);
@@ -1063,6 +1067,7 @@ int main() {
 					nread = 0;
 					break;
 				case 'w':
+					fputs("Name: ", stdout);
 					nread = getline(&line, &size, stdin);
 					if (nread > 1) {
 						line[nread - 1] = 0;
