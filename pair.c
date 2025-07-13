@@ -1018,12 +1018,16 @@ int main() {
 
 	if (!index.first) {
 		free(line);
+		if (second.value) {
+			free(second.value);
+		}
 		exit(EXIT_FAILURE);
 	}
 
 	free(line);
 	line = (char *) NULL;
 	size = 0;
+	nread = 1;
 	while (nread > 0) {
 		fputs("\nCommand (m for help): ", stdout);
 		nread = getline(&line, &size, stdin);
