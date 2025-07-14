@@ -781,41 +781,42 @@ void add(struct index *index) {
 void erase(struct index *index, size_t next) {
 	const size_t size = index->size;
 	if (next < size) {
-		while (++next < size) {
-			struct first *second = index->first[next];
-			index->first[next] = index->first[next - 1];
-			index->first[next - 1] = second;
-		}
-
-		struct first *first = index->first[--index->size];
+		struct first *first = index->first[next];
 		free(first->in);
 		free(first->out);
 		if (index->second->name && !index->second->next) {
 			free(first->name);
 		}
 		free(first);
+
+		while (++next < size) {
+			index->first[next - 1] = index->first[next];
+		}
+
+		--index->size;
 	}
 }
 
 void list(const struct index *index) {
+	const size_t size = index->size;
 	if (index->second->name) {
 		if (index->second->next) {
 			printf("Name: %s\n", index->second->value);
 			fputs("In\tOut\tIndex\tStart\tEnd\tSize\n", stdout);
-			for (size_t i = 0; i < index->size; ++i) {
+			for (size_t i = 0; i < size; ++i) {
 				const struct first *first = index->first[i];
 				printf("%s\t%s\t%zu\t%zu\t%zu\t%zu\n", first->in, first->out, first->index, first->next, first->next + first->size - 1, first->size);
 			}
 		} else {
 			fputs("In\tOut\tName\tIndex\tStart\tEnd\tSize\n", stdout);
-			for (size_t i = 0; i < index->size; ++i) {
+			for (size_t i = 0; i < size; ++i) {
 				const struct first *first = index->first[i];
 				printf("%s\t%s\t%s\t%zu\t%zu\t%zu\t%zu\n", first->in, first->out, first->name, first->index, first->next, first->next + first->size - 1, first->size);
 			}
 		}
 	} else {
 		fputs("In\tOut\tIndex\tStart\tEnd\tSize\n", stdout);
-		for (size_t i = 0; i < index->size; ++i) {
+		for (size_t i = 0; i < size; ++i) {
 			const struct first *first = index->first[i];
 			printf("%s\t%s\t%zu\t%zu\t%zu\t%zu\n", first->in, first->out, first->index, first->next, first->next + first->size - 1, first->size);
 		}
@@ -907,9 +908,10 @@ void tell(const struct index *index) {
 }
 
 void quit(const struct index *index) {
+	const size_t size = index->size;
 	if (index->second->name) {
 		if (index->second->next) {
-			for (size_t i = 0; i < index->size; ++i) {
+			for (size_t i = 0; i < size; ++i) {
 				struct first *first = index->first[i];
 
 				free(first->in);
@@ -919,7 +921,7 @@ void quit(const struct index *index) {
 
 			free(index->second->value);
 		} else {
-			for (size_t i = 0; i < index->size; ++i) {
+			for (size_t i = 0; i < size; ++i) {
 				struct first *first = index->first[i];
 
 				free(first->in);
@@ -929,7 +931,7 @@ void quit(const struct index *index) {
 			}
 		}
 	} else {
-		for (size_t i = 0; i < index->size; ++i) {
+		for (size_t i = 0; i < size; ++i) {
 			struct first *first = index->first[i];
 
 			free(first->in);
