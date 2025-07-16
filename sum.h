@@ -3,12 +3,12 @@
 void splice(uint8_t *out, const uint8_t *in, size_t index, size_t size) {
 	if (size > 0) {
 		size_t i = index >> 3;
-		const size_t j = index & 7;
+		const uint8_t j = index & 7;
 
 		index = 0;
 		size_t k = 0;
 		if (j) {
-			const size_t l = 8 - j;
+			const uint8_t l = 8 - j;
 			while (k < size) {
 				out[index] = in[i] << j;
 				k += l;
