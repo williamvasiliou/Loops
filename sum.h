@@ -880,6 +880,28 @@ void aboutWould(pair *item, const uint8_t *in, size_t index, size_t size) {
 				default:
 					i = 0;
 			}
+		} else {
+			if (item->size >= item->sum) {
+				item->second = (pair **) reallocarray(item->second, 2 * item->sum, sizeof(pair *));
+				item->sum *= 2;
+			}
+
+			switch (integer() % 3) {
+				case 0:
+					if (i > 5) {
+						i = 5;
+					}
+					item->second[0] = aboutKnowYourHim(in, index, i, aboutAsWhatTheOnlyHimWill);
+					break;
+				case 1:
+					item->second[0] = aboutKnowYourHim(in, index, i, aboutBy);
+					break;
+				default:
+					item->second[0] = aboutKnowYourHim(in, index, i, aboutGiveUsGoodKnowShe);
+					break;
+			}
+			j += i;
+			++item->size;
 		}
 
 		while (j < size) {
@@ -1213,6 +1235,701 @@ void afterGoThatAfterWeWhenOr(pair *item, const uint8_t *in, size_t index, size_
 			j += i;
 			++item->size;
 		}
+	}
+}
+
+void afterHeWeWorkUsThat(const pair *item, FILE *stream) {
+	const size_t size = item->size;
+	if (size < 6) {
+		uint8_t first = item->first[0];
+		switch (size) {
+			case 0:
+				if (byte() & 1) {
+					fputs("'!'", stream);
+				} else {
+					fputs("'\"'", stream);
+				}
+				break;
+			case 1:
+				if (byte() & 1) {
+					fprintf(stream, "'%c'", '#' + (first >> 7));
+				} else {
+					fprintf(stream, "'%c'", '%' + (first >> 7));
+				}
+				break;
+			case 2:
+				if (byte() & 1) {
+					first >>= 6;
+					if (first) {
+						fprintf(stream, "'%c'", '\'' + first);
+					} else {
+						fputs("'\\''", stream);
+					}
+				} else {
+					fprintf(stream, "'%c'", '+' + (first >> 6));
+				}
+				break;
+			case 3:
+				if (byte() & 1) {
+					fprintf(stream, "'%c'", '/' + (first >> 5));
+				} else {
+					fprintf(stream, "'%c'", '7' + (first >> 5));
+				}
+				break;
+			case 4:
+				if (byte() & 1) {
+					fprintf(stream, "'%c'", '?' + (first >> 4));
+				} else {
+					first >>= 4;
+					if (first == 13) {
+						fputs("'\\\\'", stream);
+					} else {
+						fprintf(stream, "'%c'", 'O' + first);
+					}
+				}
+				break;
+			default:
+				fprintf(stream, "'%c'", '_' + (first >> 3));
+				break;
+		}
+	} else {
+		fputs("' '", stream);
+	}
+}
+
+static const char *afterHerMyTheyLikeToMy[] = {"be", "other", "than", "because", "all", "at", "not", "good", "how", "over", "up", "that", "or", "use", "work"};
+static const char *afterHimWhatOver[] = {"as", "to", "just", "his", "with", "from", "but", "one", "like", "there", "she", "her", "the", "know", "want"};
+static const char *afterHisInto[] = {"year", "us", "look", "these", "no", "they", "way", "time", "give", "people", "some", "it", "well", "have", "when"};
+static const char *afterItsOurWouldThese[] = {"now", "so", "our", "he", "them", "my", "would", "only", "say", "two", "you", "come", "its", "of", "go"};
+
+static const char **afterItsWantComeWithOf[] = {afterHerMyTheyLikeToMy, afterHimWhatOver, afterHisInto, afterItsOurWouldThese};
+
+void afterJustEvenWeToAfterSo(const pair *item, FILE *stream) {
+	const size_t size = item->size;
+	if (size > 0) {
+		uint8_t out = 0;
+		size_t i = 0;
+		size_t j = integer() % (size + 1);
+		if (j > 3) {
+			j = 3;
+		}
+
+		if (j) {
+			splice(&out, item->first, i, j);
+			out >>= (8 - j);
+
+			switch (j) {
+				case 1:
+					fputs(afterItsWantComeWithOf[byte() & 3][1 + out], stream);
+					break;
+				case 2:
+					fputs(afterItsWantComeWithOf[byte() & 3][3 + out], stream);
+					break;
+				default:
+					fputs(afterItsWantComeWithOf[byte() & 3][7 + out], stream);
+					break;
+			}
+			i += j;
+		} else {
+			fputs(afterItsWantComeWithOf[byte() & 3][0], stream);
+		}
+
+		while (i < size) {
+			j = integer() % (size - i + 1);
+			if (j > 3) {
+				j = 3;
+			}
+
+			if (j) {
+				splice(&out, item->first, i, j);
+				out >>= (8 - j);
+
+				uint8_t k = 0;
+				switch (j) {
+					case 1:
+						k = 1 + out;
+						break;
+					case 2:
+						k = 3 + out;
+						break;
+					default:
+						k = 7 + out;
+						break;
+				}
+
+				const char *l = afterItsWantComeWithOf[byte() & 3][k];
+				fputc(*l - 32, stream);
+				fputs(l + 1, stream);
+
+				i += j;
+			} else {
+				const char *j = afterItsWantComeWithOf[byte() & 3][0];
+				fputc(*j - 32, stream);
+				fputs(j + 1, stream);
+			}
+		}
+	} else {
+		fputs(afterItsWantComeWithOf[byte() & 3][0], stream);
+		size_t i = byte() & 3;
+		while (i > 0) {
+			const char *j = afterItsWantComeWithOf[byte() & 3][0];
+			fputc(*j - 32, stream);
+			fputs(j + 1, stream);
+			--i;
+		}
+	}
+}
+
+void afterJustSheUpAlsoJust(const pair *item, FILE *stream) {
+	const size_t size = item->size;
+	if (size > 0) {
+		uint8_t out = 0;
+		size_t i = 0;
+		while (i < size) {
+			size_t j = integer() % (size - i + 1);
+			if (j > 2) {
+				j = 2;
+			}
+
+			if (j) {
+				splice(&out, item->first, i, j);
+				out >>= (8 - j);
+
+				switch (j) {
+					case 1:
+						if (byte() & 1) {
+							fputc('1' + out, stream);
+						} else {
+							fputc('8' + out, stream);
+						}
+						break;
+					default:
+						fputc('3' + out, stream);
+						break;
+				}
+				i += j;
+			} else if (byte() & 1) {
+				fputc('0', stream);
+			} else {
+				fputc('7', stream);
+			}
+		}
+	} else if (byte() & 1) {
+		fputc('0', stream);
+	} else {
+		fputc('7', stream);
+	}
+}
+
+static const char *afterKnowKnow[] = {"+", "-", "*", "/", "%", "<", "<=", "!=", "==", ">", ">=", "&", "&&", "|", "||"};
+
+void afterKnowOnlyWe(const pair *item, FILE *stream) {
+	const size_t size = item->size;
+	if (size < 4) {
+		const uint8_t first = item->first[0];
+		switch (size) {
+			case 0:
+				fputs(afterKnowKnow[0], stream);
+				break;
+			case 1:
+				fputs(afterKnowKnow[1 + (first >> 7)], stream);
+				break;
+			case 2:
+				fputs(afterKnowKnow[3 + (first >> 6)], stream);
+				break;
+			default:
+				fputs(afterKnowKnow[7 + (first >> 5)], stream);
+				break;
+		}
+	} else {
+		fputs("++", stream);
+	}
+}
+
+static const char *afterLikeSo[] = {"=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=", "&&=", "||=", "=~", ".="};
+
+void afterMeOnWithAndTheSay(const pair *item, FILE *stream) {
+	const size_t size = item->size;
+	if (size < 4) {
+		const uint8_t first = item->first[0];
+		switch (size) {
+			case 0:
+				fputs(afterLikeSo[0], stream);
+				break;
+			case 1:
+				fputs(afterLikeSo[1 + (first >> 7)], stream);
+				break;
+			case 2:
+				fputs(afterLikeSo[3 + (first >> 6)], stream);
+				break;
+			default:
+				fputs(afterLikeSo[7 + (first >> 5)], stream);
+				break;
+		}
+	} else {
+		fputs("--", stream);
+	}
+}
+
+static const char *afterMost = "/0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+void afterMy(const pair *item, FILE *stream) {
+	const size_t size = item->size;
+	if (size > 0) {
+		uint8_t out = 0;
+		size_t i = 0;
+		while (i < size) {
+			size_t j = integer() % (size - i + 1);
+			if (j > 5) {
+				j = 5;
+			}
+
+			if (j) {
+				splice(&out, item->first, i, j);
+				out >>= (8 - j);
+
+				switch (j) {
+					case 1:
+						fputc(afterMost[1 + out], stream);
+						break;
+					case 2:
+						fputc(afterMost[3 + out], stream);
+						break;
+					case 3:
+						fputc(afterMost[7 + out], stream);
+						break;
+					case 4:
+						fputc(afterMost[15 + out], stream);
+						break;
+					default:
+						fputc(afterMost[31 + out], stream);
+						break;
+				}
+				i += j;
+			} else {
+				fputc(*afterMost, stream);
+			}
+		}
+	} else {
+		fputc(*afterMost, stream);
+	}
+}
+
+static const char *afterMyThanWhichOnCan[] = {"bool", "char", "double", "float", "int", "long", "long double", "long int", "long long", "short", "size_t", "unsigned char", "unsigned int", "unsigned long", "unsigned short"};
+
+void afterNo(const pair *item, FILE *stream) {
+	const size_t size = item->size;
+	if (size < 4) {
+		const uint8_t first = item->first[0];
+		switch (size) {
+			case 0:
+				fputs(afterMyThanWhichOnCan[0], stream);
+				break;
+			case 1:
+				fputs(afterMyThanWhichOnCan[1 + (first >> 7)], stream);
+				break;
+			case 2:
+				fputs(afterMyThanWhichOnCan[3 + (first >> 6)], stream);
+				break;
+			default:
+				fputs(afterMyThanWhichOnCan[7 + (first >> 5)], stream);
+				break;
+		}
+	} else {
+		fputs("void", stream);
+	}
+}
+
+void print(const pair *item, size_t index, FILE *stream) {
+	switch (item->value) {
+		case about:
+			print(item->second[0], index, stream);
+			fputc(' ', stream);
+			print(item->second[1], index, stream);
+			fputc(' ', stream);
+			print(item->second[2], index, stream);
+			break;
+		case aboutAnDay:
+			if (item->size > 0) {
+				const size_t size = item->size;
+				pair **second = item->second;
+
+				const uint8_t value = second[0]->value;
+				switch (value) {
+					case about:
+					case aboutItsBecauseOr:
+						for (size_t i = 0; i <= index; ++i) {
+							fputc('\t', stream);
+						}
+						break;
+					default:
+						break;
+				}
+				print(second[0], ++index, stream);
+				if (value == about) {
+					fputc(';', stream);
+				}
+
+				for (size_t i = 1; i < size; ++i) {
+					switch (second[i - 1]->value) {
+						case about:
+						case aboutItsBecauseOr:
+							fputc('\n', stream);
+							break;
+						default:
+							fputc('\n', stream);
+							fputc('\n', stream);
+							break;
+					}
+
+					const uint8_t value = second[i]->value;
+					switch (value) {
+						case about:
+						case aboutItsBecauseOr:
+							for (size_t j = 0; j < index; ++j) {
+								fputc('\t', stream);
+							}
+							break;
+						default:
+							break;
+					}
+					print(second[i], index, stream);
+					if (value == about) {
+						fputc(';', stream);
+					}
+				}
+			}
+			break;
+		case aboutAnYouHimTimeMake:
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputs("case ", stream);
+			print(item->second[0], index, stream);
+			fputc(':', stream);
+			fputc('\n', stream);
+			print(item->second[1], index, stream);
+			break;
+		case aboutAnyTheirThere:
+			if (item->size > 0) {
+				const size_t size = item->size;
+				pair **second = item->second;
+				print(second[0], ++index, stream);
+				fputc('\n', stream);
+				for (size_t i = 0; i <= index; ++i) {
+					fputc('\t', stream);
+				}
+				fputs("break;", stream);
+				for (size_t i = 1; i < size; ++i) {
+					fputc('\n', stream);
+					print(second[i], index, stream);
+					fputc('\n', stream);
+					for (size_t j = 0; j <= index; ++j) {
+						fputc('\t', stream);
+					}
+					fputs("break;", stream);
+				}
+			}
+			break;
+		case aboutAsWhatTheOnlyHimWill:
+			afterHeWeWorkUsThat(item, stream);
+			break;
+		case aboutAtLikeToThem:
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputs("default:\n", stream);
+			print(item->second[0], index, stream);
+			break;
+		case aboutAtToNotWellOnWork:
+			fputs("#define ", stream);
+			print(item->second[0], index, stream);
+			fputc(' ', stream);
+			print(item->second[1], index, stream);
+			break;
+		case aboutBackOnHim:
+			fputs(" else {\n", stream);
+			print(item->second[0], index, stream);
+			fputc('\n', stream);
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputc('}', stream);
+			break;
+		case aboutBackSeeWould:
+			fputs(" else if (", stream);
+			print(item->second[0], index, stream);
+			fputs(") {\n", stream);
+			print(item->second[1], index, stream);
+			fputc('\n', stream);
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputc('}', stream);
+			break;
+		case aboutBe:
+			if (item->size > 0) {
+				const size_t size = item->size;
+				pair **second = item->second;
+				print(second[0], index, stream);
+				for (size_t i = 1; i < size; ++i) {
+					fputc(' ', stream);
+					print(second[i], index, stream);
+				}
+			} else {
+				switch (integer() % 3) {
+					case 0:
+						if (byte() & 1) {
+							fputs("'!'", stream);
+						} else {
+							fputs("'\"'", stream);
+						}
+						break;
+					case 1:
+						fputs(afterItsWantComeWithOf[byte() & 3][0], stream);
+						size_t i = byte() & 3;
+						while (i > 0) {
+							const char *j = afterItsWantComeWithOf[byte() & 3][0];
+							fputc(*j - 32, stream);
+							fputs(j + 1, stream);
+							--i;
+						}
+						break;
+					default:
+						if (byte() & 1) {
+							fputc('0', stream);
+						} else {
+							fputc('7', stream);
+						}
+						break;
+				}
+
+				size_t i = byte() & 3;
+				while (i > 0) {
+					fputc(' ', stream);
+					fputs(afterKnowKnow[0], stream);
+					fputc(' ', stream);
+
+					switch (integer() % 3) {
+						case 0:
+							if (byte() & 1) {
+								fputs("'!'", stream);
+							} else {
+								fputs("'\"'", stream);
+							}
+							break;
+						case 1:
+							fputs(afterItsWantComeWithOf[byte() & 3][0], stream);
+							size_t j = byte() & 3;
+							while (j > 0) {
+								const char *k = afterItsWantComeWithOf[byte() & 3][0];
+								fputc(*k - 32, stream);
+								fputs(k + 1, stream);
+								--j;
+							}
+							break;
+						default:
+							if (byte() & 1) {
+								fputc('0', stream);
+							} else {
+								fputc('7', stream);
+							}
+							break;
+					}
+					--i;
+				}
+			}
+			break;
+		case aboutBeTheirNotUpAs:
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputs("for (", stream);
+			print(item->second[0], index, stream);
+			if (item->second[1]->size > 0) {
+				fputc(' ', stream);
+				print(item->second[1], index, stream);
+			}
+			fputs("; ", stream);
+			print(item->second[2], index, stream);
+			fputs(") {\n", stream);
+			print(item->second[3], index, stream);
+			fputc('\n', stream);
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputc('}', stream);
+			break;
+		case aboutBut:
+			print(item->second[0], index, stream);
+			fputc(' ', stream);
+			print(item->second[1], index, stream);
+			fputc('(', stream);
+			print(item->second[2], index, stream);
+			fputs(") {\n", stream);
+			print(item->second[3], index, stream);
+			fputc('\n', stream);
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputc('}', stream);
+			break;
+		case aboutBy:
+			afterJustEvenWeToAfterSo(item, stream);
+			break;
+		case aboutCanThem:
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputs("if (", stream);
+			print(item->second[0], index, stream);
+			fputs(") {\n", stream);
+			print(item->second[1], index, stream);
+			fputc('\n', stream);
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputc('}', stream);
+			if (item->size > 2) {
+				const size_t size = item->size;
+				pair **second = item->second;
+				for (size_t i = 2; i < size; ++i) {
+					print(second[i], index, stream);
+				}
+			}
+			break;
+		case aboutEvenUseBackWhenHis:
+			fputs("#include <", stream);
+			print(item->second[0], index, stream);
+			fputc('.', stream);
+			fputc('h', stream);
+			fputc('>', stream);
+			break;
+		case aboutGiveUsGoodKnowShe:
+			afterJustSheUpAlsoJust(item, stream);
+			break;
+		case aboutGoOn:
+			afterKnowOnlyWe(item, stream);
+			break;
+		case aboutGoPeopleYearHimAllWork:
+			afterMeOnWithAndTheSay(item, stream);
+			break;
+		case aboutHaveOurNoFrom:
+			print(item->second[0], index, stream);
+			fputc(' ', stream);
+			print(item->second[1], index, stream);
+			break;
+		case aboutHeSeeOur:
+			if (item->size > 0) {
+				const size_t size = item->size;
+				pair **second = item->second;
+				print(second[0], index, stream);
+				for (size_t i = 1; i < size; ++i) {
+					fputc(',', stream);
+					fputc(' ', stream);
+					print(second[i], index, stream);
+				}
+			}
+			break;
+		case aboutHowHaveOn:
+			afterMy(item, stream);
+			break;
+		case aboutIntoThisThisButCould:
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputs("switch (", stream);
+			print(item->second[0], index, stream);
+			fputs(") {\n", stream);
+			print(item->second[1], index, stream);
+			fputc('\n', stream);
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputc('}', stream);
+			break;
+		case aboutItSayFromThis:
+			afterNo(item, stream);
+			break;
+		case aboutItsBecauseOr:
+			print(item->second[0], index, stream);
+			fputc(' ', stream);
+			print(item->second[1], index, stream);
+			fputc(' ', stream);
+			fputc('=', stream);
+			fputc(' ', stream);
+			print(item->second[2], index, stream);
+			fputc(';', stream);
+			break;
+		case aboutItsPeopleWellOther:
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputs("while (", stream);
+			print(item->second[0], index, stream);
+			fputs(") {\n", stream);
+			print(item->second[1], index, stream);
+			fputc('\n', stream);
+			for (size_t i = 0; i < index; ++i) {
+				fputc('\t', stream);
+			}
+			fputc('}', stream);
+			break;
+	}
+}
+
+void afterNoAlsoAll(const pair *item, uint8_t *in, uint8_t *index, FILE *stream) {
+	const size_t size = item->size;
+	if (size > 0) {
+		const size_t sum = (size - 1) >> 3;
+		const uint8_t value = *index & 7;
+		if (value) {
+			const uint8_t j = 8 - value;
+			for (size_t i = 0; i < sum; ++i) {
+				*in |= item->first[i] >> value;
+				fputc(*in, stream);
+				*in = item->first[i] << j;
+			}
+		} else {
+			*in = 0;
+			for (size_t i = 0; i < sum; ++i) {
+				fputc(item->first[i], stream);
+			}
+		}
+
+		uint8_t i = item->first[sum];
+		const uint8_t j = size & 7;
+		if (j) {
+			const uint8_t k = j + value;
+			if (k > 7) {
+				*in |= i >> value;
+				fputc(*in, stream);
+				*in = i << (8 - value);
+				*index = k & 7;
+			} else {
+				*in |= i >> value;
+				*index += j;
+			}
+		} else {
+			*in |= i >> value;
+			fputc(*in, stream);
+			*in = i << (8 - value);
+		}
+	}
+}
+
+void afterNotFrom(const pair *item, uint8_t *in, uint8_t *index, FILE *stream) {
+	switch (item->is) {
+		case PAIR_FIRST:
+			afterNoAlsoAll(item, in, index, stream);
+			break;
+		case PAIR_SECOND:
+			const size_t size = item->size;
+			pair **second = item->second;
+			for (size_t i = 0; i < size; ++i) {
+				afterNotFrom(second[i], in, index, stream);
+			}
+			break;
 	}
 }
 
