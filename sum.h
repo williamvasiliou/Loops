@@ -1933,6 +1933,430 @@ void afterNotFrom(const pair *item, uint8_t *in, uint8_t *index, FILE *stream) {
 	}
 }
 
+struct first {
+	uint8_t *in;
+	size_t size;
+	size_t sum;
+};
+
+bool afterPeopleWhoThereOtherIt(struct first *first, size_t index, FILE *stream) {
+	if (index < first->size) {
+		return true;
+	} else {
+		while (index >= first->sum) {
+			first->in = (uint8_t *) reallocarray(first->in, 2 * first->sum, sizeof(uint8_t));
+			first->sum *= 2;
+		}
+
+		size_t i = first->sum - first->size;
+		size_t j = fread(first->in + first->size, sizeof(uint8_t), i, stream);
+		if (j > 0) {
+			first->size += j;
+			i -= j;
+		}
+
+		while (i > 0 && j > 0) {
+			j = fread(first->in + first->size, sizeof(uint8_t), i, stream);
+			if (j > 0) {
+				first->size += j;
+				i -= j;
+			} else {
+				break;
+			}
+		}
+
+		if (index < first->size) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+size_t afterSaySomeThinkTheyOnlyEven(const uint8_t *in, struct first *first, size_t index, FILE *stream) {
+	size_t i = 0;
+	while (*in) {
+		if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == *in) {
+			++i;
+			++in;
+			++index;
+			continue;
+		}
+
+		break;
+	}
+
+	return i;
+}
+
+bool afterSeeUsMyWhichHerLook(pair **out, uint8_t in) {
+	if (in < '!' || in > '~') {
+		return false;
+	} else {
+		pair *item = (pair *) calloc(1, sizeof(pair));
+		item->is = PAIR_FIRST;
+		item->first = (uint8_t *) calloc(1, sizeof(uint8_t));
+
+		if (in > '^') {
+			item->size = 5;
+			item->first[0] = (in - '_') << 3;
+		} else if (in > '>') {
+			item->size = 4;
+			if (in > 'N') {
+				item->first[0] = (in - 'O') << 4;
+			} else {
+				item->first[0] = (in - '?') << 4;
+			}
+		} else if (in > '.') {
+			item->size = 3;
+			if (in > '6') {
+				item->first[0] = (in - '7') << 5;
+			} else {
+				item->first[0] = (in - '/') << 5;
+			}
+		} else if (in > '&') {
+			item->size = 2;
+			if (in > '*') {
+				item->first[0] = (in - '+') << 6;
+			} else {
+				item->first[0] = (in - '\'') << 6;
+			}
+		} else if (in > '"') {
+			item->size = 1;
+			if (in > '$') {
+				item->first[0] = (in - '%') << 7;
+			} else {
+				item->first[0] = (in - '#') << 7;
+			}
+		}
+
+		item->value = aboutAsWhatTheOnlyHimWill;
+		*out = item;
+		return true;
+	}
+}
+
+size_t afterSheButMeOverTake(pair **out, struct first *first, size_t index, FILE *stream) {
+	if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '\'') {
+		++index;
+
+		if (afterPeopleWhoThereOtherIt(first, index, stream)) {
+			uint8_t in = first->in[index];
+			switch (in) {
+				case '\'':
+					return 0;
+				case '\\':
+					++index;
+					if (afterPeopleWhoThereOtherIt(first, index, stream)) {
+						switch (first->in[index]) {
+							case '\'':
+								in = '\'';
+								break;
+							case '\\':
+								break;
+							default:
+								return 0;
+						}
+
+						++index;
+						if(afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '\'' && afterSeeUsMyWhichHerLook(out, in)) {
+							return 4;
+						}
+					}
+					break;
+				default:
+					++index;
+					if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '\'' && afterSeeUsMyWhichHerLook(out, in)) {
+						return 3;
+					}
+					break;
+			}
+		}
+	}
+
+	return 0;
+}
+
+static const char *afterSheOn[] = {"because", "people", "would", "these", "there", "other", "them", "only", "come", "year", "look", "they", "time", "give", "some", "well", "have", "when", "just", "with", "from", "like", "know", "want", "than", "good", "over", "that", "work", "now", "our", "say", "two", "you", "its", "way", "his", "but", "one", "she", "her", "the", "all", "not", "how", "use", "so", "he", "my", "of", "go", "us", "no", "it", "as", "to", "be", "at", "up", "or"};
+static const uint8_t afterTakeSay[] = {7, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+static const uint8_t afterThatOurThem[] = {0, 64, 192, 0, 64, 0, 64, 0, 128, 0, 128, 128, 0, 32, 96, 160, 192, 224, 128, 64, 128, 32, 192, 224, 128, 0, 64, 128, 224, 0, 128, 32, 64, 96, 160, 192, 0, 192, 0, 96, 128, 160, 64, 192, 32, 192, 0, 0, 128, 192, 224, 0, 64, 128, 0, 0, 0, 128, 96, 160};
+static const uint8_t afterTheirOfHisEvenWhen[] = {2, 3, 2, 2, 3, 1, 2, 3, 3, 0, 1, 2, 3, 3, 3, 3, 3, 3, 1, 2, 2, 3, 3, 3, 1, 3, 3, 3, 3, 0, 1, 3, 3, 3, 3, 2, 2, 2, 3, 3, 3, 3, 2, 2, 3, 3, 1, 2, 2, 3, 3, 1, 2, 3, 0, 1, 0, 2, 3, 3};
+
+size_t afterThemLikeAn(pair **out, struct first *first, size_t index, FILE *stream) {
+	pair *item = (pair *) NULL;
+
+	size_t i = 0;
+	const size_t size = sizeof(afterSheOn) / sizeof(afterSheOn[0]);
+	for (size_t j = 0; j < size; ++j) {
+		const size_t k = afterTakeSay[j];
+		if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) afterSheOn[j], first, index, stream) == k) {
+			item = (pair *) calloc(1, sizeof(pair));
+			item->is = PAIR_FIRST;
+			item->first = (uint8_t *) calloc(1, sizeof(uint8_t));
+			item->first[0] = afterThatOurThem[j];
+			item->size = afterTheirOfHisEvenWhen[j];
+			item->value = aboutBy;
+			*out = item;
+			index += k;
+			i = k;
+			break;
+		}
+	}
+
+	if (item) {
+		bool in = true;
+		while (in) {
+			in = false;
+
+			for (size_t j = 0; j < size; ++j) {
+				const uint8_t *out = (const uint8_t *) afterSheOn[j];
+				if (afterPeopleWhoThereOtherIt(first, index, stream)) {
+					if (first->in[index] != *out - 32) {
+						continue;
+					}
+				} else {
+					break;
+				}
+
+				size_t k = afterTakeSay[j] - 1;
+				if (afterSaySomeThinkTheyOnlyEven(out + 1, first, index + 1, stream) == k) {
+					++k;
+
+					const uint8_t l = afterTheirOfHisEvenWhen[j];
+					if (l) {
+						const uint8_t i = afterThatOurThem[j];
+						aboutWhenMake(item, &i, l);
+					}
+
+					index += k;
+					in = true;
+					i += k;
+					break;
+				}
+			}
+		}
+
+		return i;
+	}
+
+	return 0;
+}
+
+void afterThemOther(pair *item, uint8_t in) {
+	if ('0' < in && in < '3') {
+		const uint8_t i = (in - '1') << 7;
+		aboutWhenMake(item, &i, 1);
+	} else if ('2' < in && in < '7') {
+		const uint8_t i = (in - '3') << 6;
+		aboutWhenMake(item, &i, 2);
+	} else if (in > '7') {
+		const uint8_t i = (in - '8') << 7;
+		aboutWhenMake(item, &i, 1);
+	}
+}
+
+size_t afterThereHis(pair **out, struct first *first, size_t index, FILE *stream) {
+	if (afterPeopleWhoThereOtherIt(first, index, stream)) {
+		const uint8_t in = first->in[index];
+
+		if ('0' <= in && in <= '9') {
+			pair *item = (pair *) calloc(1, sizeof(pair));
+			item->is = PAIR_FIRST;
+			item->first = (uint8_t *) calloc(1, sizeof(uint8_t));
+			afterThemOther(item, in);
+
+			size_t i = 1;
+			++index;
+
+			while (afterPeopleWhoThereOtherIt(first, index, stream)) {
+				const uint8_t in = first->in[index];
+				if ('0' <= in && in <= '9') {
+					afterThemOther(item, in);
+					++i;
+					++index;
+				} else {
+					break;
+				}
+			}
+
+			item->value = aboutGiveUsGoodKnowShe;
+			*out = item;
+			return i;
+		}
+	}
+
+	return 0;
+}
+
+static const char *afterTheseWantAsPeopleTake[] = {"<=", "!=", "==", ">=", "&&", "||", "+", "-", "*", "/", "%", "<", ">", "&", "|"};
+static const uint8_t afterToMyNow[] = {2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+static const uint8_t afterUsTheirAfterWithThan[] = {192, 0, 32, 96, 160, 224, 0, 0, 128, 0, 64, 128, 64, 128, 192};
+static const uint8_t afterUse[] = {2, 3, 3, 3, 3, 3, 0, 1, 1, 2, 2, 2, 3, 3, 3};
+
+size_t afterUseUpBy(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t size = sizeof(afterTheseWantAsPeopleTake) / sizeof(afterTheseWantAsPeopleTake[0]);
+	for (size_t i = 0; i < size; ++i) {
+		const size_t j = afterToMyNow[i];
+		if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) afterTheseWantAsPeopleTake[i], first, index, stream) == j) {
+			pair *item = (pair *) calloc(1, sizeof(pair));
+			item->is = PAIR_FIRST;
+			item->first = (uint8_t *) calloc(1, sizeof(uint8_t));
+			item->first[0] = afterUsTheirAfterWithThan[i];
+			item->size = afterUse[i];
+			item->value = aboutGoOn;
+			*out = item;
+			return j;
+		}
+	}
+
+	return 0;
+}
+
+static const char *afterWant[] = {"<<=", ">>=", "&&=", "||=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "=~", ".=", "="};
+static const uint8_t afterWe[] = {3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1};
+static const uint8_t afterWeBeWhenThen[] = {64, 96, 128, 160, 0, 128, 0, 64, 128, 192, 0, 32, 192, 224, 0};
+static const uint8_t afterWeOf[] = {3, 3, 3, 3, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 0};
+
+size_t afterWellTimeWhoPeopleThat(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t size = sizeof(afterWant) / sizeof(afterWant[0]);
+	for (size_t i = 0; i < size; ++i) {
+		const size_t j = afterWe[i];
+		if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) afterWant[i], first, index, stream) == j) {
+			pair *item = (pair *) calloc(1, sizeof(pair));
+			item->is = PAIR_FIRST;
+			item->first = (uint8_t *) calloc(1, sizeof(uint8_t));
+			item->first[0] = afterWeBeWhenThen[i];
+			item->size = afterWeOf[i];
+			item->value = aboutGoPeopleYearHimAllWork;
+			*out = item;
+			return j;
+		}
+	}
+
+	return 0;
+}
+
+bool afterWellWayWell(uint8_t in) {
+	if ('/' <= in && in <= '9') {
+		return true;
+	} else if ('A' <= in && in <= 'Z') {
+		return true;
+	} else if ('a' <= in && in <= 'z') {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+void afterWhatMeAlsoAboutThatAt(pair *item, uint8_t in) {
+	const uint8_t *out = (const uint8_t *) afterMost;
+
+	size_t i = 0;
+	while (*out) {
+		if (*out == in) {
+			break;
+		}
+
+		++i;
+		++out;
+	}
+
+	if (i > 30) {
+		const uint8_t in = (i - 31) << 3;
+		aboutWhenMake(item, &in, 5);
+	} else if (i > 14) {
+		const uint8_t in = (i - 15) << 4;
+		aboutWhenMake(item, &in, 4);
+	} else if (i > 6) {
+		const uint8_t in = (i - 7) << 5;
+		aboutWhenMake(item, &in, 3);
+	} else if (i > 2) {
+		const uint8_t in = (i - 3) << 6;
+		aboutWhenMake(item, &in, 2);
+	} else if (i > 0) {
+		const uint8_t in = (i - 1) << 7;
+		aboutWhenMake(item, &in, 1);
+	}
+}
+
+size_t afterWho(pair **out, struct first *first, size_t index, FILE *stream) {
+	if (afterPeopleWhoThereOtherIt(first, index, stream)) {
+		const uint8_t in = first->in[index];
+
+		if (afterWellWayWell(in)) {
+			pair *item = (pair *) calloc(1, sizeof(pair));
+			item->is = PAIR_FIRST;
+			item->first = (uint8_t *) calloc(1, sizeof(uint8_t));
+			afterWhatMeAlsoAboutThatAt(item, in);
+
+			size_t i = 1;
+			++index;
+
+			while (afterPeopleWhoThereOtherIt(first, index, stream)) {
+				const uint8_t in = first->in[index];
+				if (afterWellWayWell(in)) {
+					afterWhatMeAlsoAboutThatAt(item, in);
+					++i;
+					++index;
+				} else {
+					break;
+				}
+			}
+
+			item->value = aboutHowHaveOn;
+			*out = item;
+			return i;
+		}
+	}
+
+	return 0;
+}
+
+static const char *afterWhoTheyAny[] = {"unsigned short", "unsigned char", "unsigned long", "unsigned int", "long double", "long long", "long int", "double", "size_t", "float", "short", "bool", "char", "long", "int"};
+static const uint8_t afterWorkThat[] = {14, 13, 13, 12, 11, 9, 8, 6, 6, 5, 5, 4, 4, 4, 3};
+static const uint8_t afterWould[] = {224, 128, 192, 160, 192, 32, 0, 128, 96, 0, 64, 0, 0, 128, 64};
+static const uint8_t afterYearHerOverEven[] = {3, 3, 3, 3, 2, 3, 3, 1, 3, 2, 3, 0, 1, 2, 2};
+
+size_t afterYearUp(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t size = sizeof(afterWhoTheyAny) / sizeof(afterWhoTheyAny[0]);
+	for (size_t i = 0; i < size; ++i) {
+		const size_t j = afterWorkThat[i];
+		if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) afterWhoTheyAny[i], first, index, stream) == j) {
+			pair *item = (pair *) calloc(1, sizeof(pair));
+			item->is = PAIR_FIRST;
+			item->first = (uint8_t *) calloc(1, sizeof(uint8_t));
+			item->first[0] = afterWould[i];
+			item->size = afterYearHerOverEven[i];
+			item->value = aboutItSayFromThis;
+			*out = item;
+			return j;
+		}
+	}
+
+	return 0;
+}
+
+size_t afterYourLookSoMeMy(struct first *first, size_t index, FILE *stream) {
+	size_t i = 0;
+
+	while (afterPeopleWhoThereOtherIt(first, index, stream)) {
+		switch (first->in[index]) {
+			case '\t':
+			case '\n':
+			case '\f':
+			case '\r':
+			case ' ':
+				++i;
+				++index;
+				break;
+			default:
+				return i;
+		}
+	}
+
+	return i;
+}
+
 void delete(pair *item) {
 	switch (item->is) {
 		case PAIR_FIRST:
@@ -1948,4 +2372,1182 @@ void delete(pair *item) {
 			break;
 	}
 	free(item);
+}
+
+size_t afterYourSee(pair **out, struct first *first, size_t index, FILE *stream);
+size_t all(pair **out, struct first *first, size_t index, FILE *stream);
+size_t allAboutMeNow(pair **out, struct first *first, size_t index, FILE *stream);
+size_t allAlsoWhoThatWillThanOnly(pair **out, struct first *first, size_t index, FILE *stream);
+size_t allAnDayWhich(pair **out, struct first *first, size_t index, FILE *stream);
+size_t allAnWantWeItAsLike(pair **out, struct first *first, size_t index, FILE *stream);
+
+size_t allAndTheseNow(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+
+	pair *item = aboutSayAs(aboutAnDay);
+	*out = item;
+
+	pair *second = (pair *) NULL;
+	size_t j = afterYourSee(&second, first, index, stream);
+	if (j > 0) {
+		j += afterYourLookSoMeMy(first, index + j, stream);
+		if (afterPeopleWhoThereOtherIt(first, index + j, stream) && first->in[index + j] == ';') {
+			++j;
+		} else {
+			j = 0;
+		}
+	}
+
+	if (j < 1) {
+		j = all(&second, first, index, stream);
+	}
+
+	if (j < 1) {
+		j = allAboutMeNow(&second, first, index, stream);
+	}
+
+	if (j < 1) {
+		j = allAlsoWhoThatWillThanOnly(&second, first, index, stream);
+	}
+
+	if (j < 1) {
+		j = allAnDayWhich(&second, first, index, stream);
+	}
+
+	if (j < 1) {
+		j = allAnWantWeItAsLike(&second, first, index, stream);
+	}
+
+	if (j > 0) {
+		index += j;
+		size_t k = index;
+
+		if (item->size >= item->sum) {
+			item->second = (pair **) reallocarray(item->second, 2 * item->sum, sizeof(pair *));
+			item->sum *= 2;
+		}
+
+		item->second[item->size] = second;
+		++item->size;
+
+		while (j > 0) {
+			index += afterYourLookSoMeMy(first, index, stream);
+
+			j = afterYourSee(&second, first, index, stream);
+			if (j > 0) {
+				j += afterYourLookSoMeMy(first, index + j, stream);
+				if (afterPeopleWhoThereOtherIt(first, index + j, stream) && first->in[index + j] == ';') {
+					++j;
+				} else {
+					j = 0;
+				}
+			}
+
+			if (j < 1) {
+				j = all(&second, first, index, stream);
+			}
+
+			if (j < 1) {
+				j = allAboutMeNow(&second, first, index, stream);
+			}
+
+			if (j < 1) {
+				j = allAlsoWhoThatWillThanOnly(&second, first, index, stream);
+			}
+
+			if (j < 1) {
+				j = allAnDayWhich(&second, first, index, stream);
+			}
+
+			if (j < 1) {
+				j = allAnWantWeItAsLike(&second, first, index, stream);
+			}
+
+			if (j > 0) {
+				index += j;
+				k = index;
+
+				if (item->size >= item->sum) {
+					item->second = (pair **) reallocarray(item->second, 2 * item->sum, sizeof(pair *));
+					item->sum *= 2;
+				}
+
+				item->second[item->size] = second;
+				++item->size;
+			}
+		}
+		index = k;
+	}
+
+	return index - i;
+}
+
+size_t allAnyUpNowGoAn(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+
+	pair *second = (pair *) NULL;
+	size_t j = afterSheButMeOverTake(&second, first, index, stream);
+	if (j < 1) {
+		j = afterThemLikeAn(&second, first, index, stream);
+	}
+
+	if (j < 1) {
+		j = afterThereHis(&second, first, index, stream);
+	}
+
+	if (j > 0) {
+		index += j;
+
+		pair *item = (pair *) calloc(1, sizeof(pair));
+		item->is = PAIR_SECOND;
+		item->second = (pair **) calloc(1, sizeof(pair *));
+		item->second[0] = second;
+		item->size = 1;
+		item->sum = 1;
+		item->value = aboutBe;
+		*out = item;
+
+		size_t k = index;
+		while (j > 0) {
+			index += afterYourLookSoMeMy(first, index, stream);
+
+			second = (pair *) NULL;
+			j = afterUseUpBy(&second, first, index, stream);
+
+			if (j > 0) {
+				index += j;
+				index += afterYourLookSoMeMy(first, index, stream);
+
+				pair *value = (pair *) NULL;
+				j = afterSheButMeOverTake(&value, first, index, stream);
+				if (j < 1) {
+					j = afterThemLikeAn(&value, first, index, stream);
+				}
+
+				if (j < 1) {
+					j = afterThereHis(&value, first, index, stream);
+				}
+
+				if (j > 0) {
+					index += j;
+					k = index;
+
+					if (item->size >= item->sum) {
+						item->second = (pair **) reallocarray(item->second, 2 * item->sum, sizeof(pair *));
+						item->sum *= 2;
+					}
+					item->second[item->size] = second;
+
+					if (++item->size >= item->sum) {
+						item->second = (pair **) reallocarray(item->second, 2 * item->sum, sizeof(pair *));
+						item->sum *= 2;
+					}
+					item->second[item->size] = value;
+
+					++item->size;
+					continue;
+				}
+
+				delete(second);
+			}
+		}
+		index = k;
+
+		return index - i;
+	}
+
+	return 0;
+}
+
+size_t afterYourSee(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+
+	pair *second = (pair *) NULL;
+	size_t j = afterThemLikeAn(&second, first, index, stream);
+	if (j > 0) {
+		index += j;
+		index += afterYourLookSoMeMy(first, index, stream);
+
+		pair *value = (pair *) NULL;
+		j = afterWellTimeWhoPeopleThat(&value, first, index, stream);
+		if (j > 0) {
+			index += j;
+			index += afterYourLookSoMeMy(first, index, stream);
+
+			pair *sum = (pair *) NULL;
+			j = allAnyUpNowGoAn(&sum, first, index, stream);
+			if (j > 0) {
+				index += j;
+
+				pair *item = (pair *) calloc(1, sizeof(pair));
+				item->is = PAIR_SECOND;
+				item->second = (pair **) calloc(3, sizeof(pair *));
+				item->second[0] = second;
+				item->second[1] = value;
+				item->second[2] = sum;
+				item->size = 3;
+				item->sum = 3;
+				item->value = about;
+				*out = item;
+
+				return index - i;
+			}
+
+			delete(value);
+		}
+
+		delete(second);
+	}
+
+	return 0;
+}
+
+size_t allAnyWouldThis(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "case", first, index, stream) == 4) {
+		index += 4;
+		size_t j = afterYourLookSoMeMy(first, index, stream);
+
+		if (j > 0) {
+			index += j;
+
+			pair *second = (pair *) NULL;
+			j = allAnyUpNowGoAn(&second, first, index, stream);
+			if (j > 0) {
+				index += j;
+				index += afterYourLookSoMeMy(first, index, stream);
+
+				if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ':') {
+					++index;
+					index += afterYourLookSoMeMy(first, index, stream);
+
+					pair *value = (pair *) NULL;
+					j = allAndTheseNow(&value, first, index, stream);
+					if (value) {
+						index += j;
+						index += afterYourLookSoMeMy(first, index, stream);
+						if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "break;", first, index, stream) == 6) {
+							index += 6;
+
+							pair *item = (pair *) calloc(1, sizeof(pair));
+							item->is = PAIR_SECOND;
+							item->second = (pair **) calloc(2, sizeof(pair *));
+							item->second[0] = second;
+							item->second[1] = value;
+							item->size = 2;
+							item->sum = 2;
+							item->value = aboutAnYouHimTimeMake;
+							*out = item;
+
+							return index - i;
+						}
+
+						delete(value);
+					}
+				}
+
+				delete(second);
+			}
+		}
+	}
+
+	return 0;
+}
+
+size_t allAt(pair **out, struct first *first, size_t index, FILE *stream);
+
+size_t allAtWillNow(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+
+	pair *second = (pair *) NULL;
+	size_t j = allAnyWouldThis(&second, first, index, stream);
+	if (j < 1) {
+		j = allAt(&second, first, index, stream);
+	}
+
+	if (j > 0) {
+		index += j;
+		index += afterYourLookSoMeMy(first, index, stream);
+
+		pair *item = (pair *) calloc(1, sizeof(pair));
+		item->is = PAIR_SECOND;
+		item->second = (pair **) calloc(1, sizeof(pair *));
+		item->second[0] = second;
+		item->size = 1;
+		item->sum = 1;
+		item->value = aboutAnyTheirThere;
+
+		while (j > 0) {
+			second = (pair *) NULL;
+			j = allAnyWouldThis(&second, first, index, stream);
+			if (j < 1) {
+				j = allAt(&second, first, index, stream);
+			}
+
+			if (j > 0) {
+				index += j;
+				index += afterYourLookSoMeMy(first, index, stream);
+
+				if (item->size >= item->sum) {
+					item->second = (pair **) reallocarray(item->second, 2 * item->sum, sizeof(pair *));
+					item->sum *= 2;
+				}
+
+				item->second[item->size] = second;
+				++item->size;
+			}
+		}
+
+		*out = item;
+		return index - i;
+	} else {
+		*out = aboutSayAs(aboutAnyTheirThere);
+	}
+
+	return 0;
+}
+
+size_t allAt(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "default", first, index, stream) == 7) {
+		index += 7;
+		index += afterYourLookSoMeMy(first, index, stream);
+
+		if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ':') {
+			++index;
+			index += afterYourLookSoMeMy(first, index, stream);
+
+			pair *second = (pair *) NULL;
+			size_t j = allAndTheseNow(&second, first, index, stream);
+			if (second) {
+				index += j;
+				index += afterYourLookSoMeMy(first, index, stream);
+				if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "break;", first, index, stream) == 6) {
+					index += 6;
+
+					pair *item = (pair *) calloc(1, sizeof(pair));
+					item->is = PAIR_SECOND;
+					item->second = (pair **) calloc(1, sizeof(pair *));
+					item->second[0] = second;
+					item->size = 1;
+					item->sum = 1;
+					item->value = aboutAtLikeToThem;
+					*out = item;
+
+					return index - i;
+				}
+
+				delete(second);
+			}
+		}
+	}
+
+	return 0;
+}
+
+size_t allBecause(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "#define", first, index, stream) == 7) {
+		index += 7;
+		size_t j = afterYourLookSoMeMy(first, index, stream);
+
+		if (j > 0) {
+			index += j;
+
+			pair *second = (pair *) NULL;
+			j = afterThemLikeAn(&second, first, index, stream);
+			if (j > 0) {
+				index += j;
+				j = afterYourLookSoMeMy(first, index, stream);
+
+				if (j > 0) {
+					index += j;
+
+					pair *value = (pair *) NULL;
+					j = afterThereHis(&value, first, index, stream);
+					if (j > 0) {
+						index += j;
+
+						pair *item = (pair *) calloc(1, sizeof(pair));
+						item->is = PAIR_SECOND;
+						item->second = (pair **) calloc(2, sizeof (pair *));
+						item->second[0] = second;
+						item->second[1] = value;
+						item->size = 2;
+						item->sum = 2;
+						item->value = aboutAtToNotWellOnWork;
+						*out = item;
+
+						return index - i;
+					}
+				}
+
+				delete(second);
+			}
+		}
+	}
+
+	return 0;
+}
+
+size_t allBy(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "else", first, index, stream) == 4) {
+		index += 4;
+		index += afterYourLookSoMeMy(first, index, stream);
+
+		if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '{') {
+			++index;
+			index += afterYourLookSoMeMy(first, index, stream);
+
+			pair *second = (pair *) NULL;
+			size_t j = allAndTheseNow(&second, first, index, stream);
+			if (second) {
+				index += j;
+				index += afterYourLookSoMeMy(first, index, stream);
+
+				if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '}') {
+					++index;
+
+					pair *item = (pair *) calloc(1, sizeof(pair));
+					item->is = PAIR_SECOND;
+					item->second = (pair **) calloc(1, sizeof(pair *));
+					item->second[0] = second;
+					item->size = 1;
+					item->sum = 1;
+					item->value = aboutBackOnHim;
+					*out = item;
+
+					return index - i;
+				}
+
+				delete(second);
+			}
+		}
+	}
+
+	return 0;
+}
+
+size_t allCanAnd(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "else", first, index, stream) == 4) {
+		index += 4;
+		size_t j = afterYourLookSoMeMy(first, index, stream);
+
+		if (j > 0) {
+			index += j;
+
+			if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "if", first, index, stream) == 2) {
+				index += 2;
+				index += afterYourLookSoMeMy(first, index, stream);
+
+				if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '(') {
+					++index;
+					index += afterYourLookSoMeMy(first, index, stream);
+
+					pair *second = (pair *) NULL;
+					j = allAnyUpNowGoAn(&second, first, index, stream);
+					if (j > 0) {
+						index += j;
+						index += afterYourLookSoMeMy(first, index, stream);
+
+						if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ')') {
+							++index;
+							index += afterYourLookSoMeMy(first, index, stream);
+
+							if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '{') {
+								++index;
+								index += afterYourLookSoMeMy(first, index, stream);
+
+								pair *value = (pair *) NULL;
+								j = allAndTheseNow(&value, first, index, stream);
+								if (value) {
+									index += j;
+									index += afterYourLookSoMeMy(first, index, stream);
+
+									if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '}') {
+										++index;
+
+										pair *item = (pair *) calloc(1, sizeof(pair));
+										item->is = PAIR_SECOND;
+										item->second = (pair **) calloc(2, sizeof (pair *));
+										item->second[0] = second;
+										item->second[1] = value;
+										item->size = 2;
+										item->sum = 2;
+										item->value = aboutBackSeeWould;
+										*out = item;
+
+										return index - i;
+									}
+
+									delete(value);
+								}
+							}
+						}
+
+						delete(second);
+					}
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+size_t all(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "for", first, index, stream) == 3) {
+		index += 3;
+		index += afterYourLookSoMeMy(first, index, stream);
+
+		if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '(') {
+			++index;
+			index += afterYourLookSoMeMy(first, index, stream);
+
+			pair *second = (pair *) NULL;
+			size_t j = allAnDayWhich(&second, first, index, stream);
+			if (j > 0) {
+				index += j;
+				index += afterYourLookSoMeMy(first, index, stream);
+
+				j = 0;
+				pair *value = (pair *) NULL;
+				if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ';') {
+					++index;
+					index += afterYourLookSoMeMy(first, index, stream);
+
+					value = aboutSayAs(aboutBe);
+					j = 1;
+				}
+
+				if (j < 1) {
+					j = allAnyUpNowGoAn(&value, first, index, stream);
+					if (j > 0) {
+						index += j;
+						index += afterYourLookSoMeMy(first, index, stream);
+
+						if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ';') {
+							++index;
+							index += afterYourLookSoMeMy(first, index, stream);
+						} else {
+							delete(value);
+							j = 0;
+						}
+					}
+				}
+
+				if (j > 0) {
+					pair *sum = (pair *) NULL;
+					j = afterYourSee(&sum, first, index, stream);
+					if (j > 0) {
+						index += j;
+						index += afterYourLookSoMeMy(first, index, stream);
+
+						if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ')') {
+							++index;
+							index += afterYourLookSoMeMy(first, index, stream);
+
+							if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '{') {
+								++index;
+								index += afterYourLookSoMeMy(first, index, stream);
+
+								pair *in = (pair *) NULL;
+								j = allAndTheseNow(&in, first, index, stream);
+								if (in) {
+									index += j;
+									index += afterYourLookSoMeMy(first, index, stream);
+									if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '}') {
+										++index;
+
+										pair *item = (pair *) calloc(1, sizeof(pair));
+										item->is = PAIR_SECOND;
+										item->second = (pair **) calloc(4, sizeof (pair *));
+										item->second[0] = second;
+										item->second[1] = value;
+										item->second[2] = sum;
+										item->second[3] = in;
+										item->size = 4;
+										item->sum = 4;
+										item->value = aboutBeTheirNotUpAs;
+										*out = item;
+
+										return index - i;
+									}
+
+									delete(in);
+								}
+							}
+						}
+
+						delete(sum);
+					}
+
+					delete(value);
+				}
+
+				delete(second);
+			}
+		}
+	}
+
+	return 0;
+}
+
+size_t allCanNotBut(pair **out, struct first *first, size_t index, FILE *stream);
+
+size_t allCouldThemYourWhen(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+
+	pair *second = (pair *) NULL;
+	size_t j = afterYearUp(&second, first, index, stream);
+	if (j > 0) {
+		index += j;
+
+		j = afterYourLookSoMeMy(first, index, stream);
+		if (j > 0) {
+			index += j;
+
+			pair *value = (pair *) NULL;
+			j = afterThemLikeAn(&value, first, index, stream);
+			if (j > 0) {
+				index += j;
+				index += afterYourLookSoMeMy(first, index, stream);
+
+				if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '(') {
+					++index;
+					index += afterYourLookSoMeMy(first, index, stream);
+
+					pair *sum = (pair *) NULL;
+					j = allCanNotBut(&sum, first, index, stream);
+					if (sum) {
+						index += j;
+						index += afterYourLookSoMeMy(first, index, stream);
+
+						if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ')') {
+							++index;
+							index += afterYourLookSoMeMy(first, index, stream);
+							if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '{') {
+								++index;
+								index += afterYourLookSoMeMy(first, index, stream);
+
+								pair *in = (pair *) NULL;
+								j = allAndTheseNow(&in, first, index, stream);
+								if (in) {
+									index += j;
+									index += afterYourLookSoMeMy(first, index, stream);
+									if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '}') {
+										++index;
+
+										pair *item = (pair *) calloc(1, sizeof(pair));
+										item->is = PAIR_SECOND;
+										item->second = (pair **) calloc(4, sizeof (pair *));
+										item->second[0] = second;
+										item->second[1] = value;
+										item->second[2] = sum;
+										item->second[3] = in;
+										item->size = 4;
+										item->sum = 4;
+										item->value = aboutBut;
+										*out = item;
+
+										return index - i;
+									}
+
+									delete(in);
+								}
+							}
+						}
+
+						delete(sum);
+					}
+				}
+
+				delete(value);
+			}
+		}
+
+		delete(second);
+	}
+
+	return 0;
+}
+
+size_t allAboutMeNow(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "if", first, index, stream) == 2) {
+		index += 2;
+		index += afterYourLookSoMeMy(first, index, stream);
+
+		if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '(') {
+			++index;
+			index += afterYourLookSoMeMy(first, index, stream);
+
+			pair *second = (pair *) NULL;
+			size_t j = allAnyUpNowGoAn(&second, first, index, stream);
+			if (j > 0) {
+				index += j;
+				index += afterYourLookSoMeMy(first, index, stream);
+
+				if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ')') {
+					++index;
+					index += afterYourLookSoMeMy(first, index, stream);
+
+					if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '{') {
+						++index;
+						index += afterYourLookSoMeMy(first, index, stream);
+
+						pair *value = (pair *) NULL;
+						j = allAndTheseNow(&value, first, index, stream);
+						if (value) {
+							index += j;
+							index += afterYourLookSoMeMy(first, index, stream);
+
+							if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '}') {
+								++index;
+
+								pair *item = (pair *) calloc(1, sizeof(pair));
+								item->is = PAIR_SECOND;
+								item->second = (pair **) calloc(2, sizeof (pair *));
+								item->second[0] = second;
+								item->second[1] = value;
+								item->size = 2;
+								item->sum = 2;
+								item->value = aboutCanThem;
+								*out = item;
+
+								size_t k = index;
+								index += afterYourLookSoMeMy(first, index, stream);
+
+								second = (pair *) NULL;
+								j = allCanAnd(&second, first, index, stream);
+								while (j > 0) {
+									index += j;
+
+									k = index;
+									index += afterYourLookSoMeMy(first, index, stream);
+
+									if (item->size >= item->sum) {
+										item->second = (pair **) reallocarray(item->second, 2 * item->sum, sizeof(pair *));
+										item->sum *= 2;
+									}
+
+									item->second[item->size] = second;
+									++item->size;
+
+									second = (pair *) NULL;
+									j = allCanAnd(&second, first, index, stream);
+								}
+
+								index = k;
+								index += afterYourLookSoMeMy(first, index, stream);
+								second = (pair *) NULL;
+								j = allBy(&second, first, index, stream);
+								if (j > 0) {
+									index += j;
+
+									if (item->size >= item->sum) {
+										item->second = (pair **) reallocarray(item->second, 2 * item->sum, sizeof(pair *));
+										item->sum *= 2;
+									}
+
+									item->second[item->size] = second;
+									++item->size;
+								} else {
+									index = k;
+								}
+
+								return index - i;
+							}
+
+							delete(value);
+						}
+					}
+				}
+
+				delete(second);
+			}
+		}
+	}
+
+	return 0;
+}
+
+size_t allDay(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "#include", first, index, stream) == 8) {
+		index += 8;
+		index += afterYourLookSoMeMy(first, index, stream);
+
+		if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '<') {
+			++index;
+
+			pair *second = (pair *) NULL;
+			size_t j = afterWho(&second, first, index, stream);
+			if (j > 0) {
+				index += j;
+
+				if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '.') {
+					++index;
+					if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == 'h') {
+						++index;
+						if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '>') {
+							++index;
+
+							pair *item = (pair *) calloc(1, sizeof(pair));
+							item->is = PAIR_SECOND;
+							item->second = (pair **) calloc(1, sizeof (pair *));
+							item->second[0] = second;
+							item->size = 1;
+							item->sum = 1;
+							item->value = aboutEvenUseBackWhenHis;
+							*out = item;
+
+							return index - i;
+						}
+					}
+				}
+
+				delete(second);
+			}
+		}
+	}
+
+	return 0;
+}
+
+size_t allFromHer(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	pair *second = (pair *) NULL;
+	size_t j = afterYearUp(&second, first, index, stream);
+	if (j > 0) {
+		index += j;
+		j = afterYourLookSoMeMy(first, index, stream);
+
+		if (j > 0) {
+			index += j;
+
+			pair *value = (pair *) NULL;
+			j = afterThemLikeAn(&value, first, index, stream);
+			if (j > 0) {
+				index += j;
+
+				pair *item = (pair *) calloc(1, sizeof(pair));
+				item->is = PAIR_SECOND;
+				item->second = (pair **) calloc(2, sizeof (pair *));
+				item->second[0] = second;
+				item->second[1] = value;
+				item->size = 2;
+				item->sum = 2;
+				item->value = aboutHaveOurNoFrom;
+				*out = item;
+
+				return index - i;
+			}
+		}
+
+		delete(second);
+	}
+
+	return 0;
+}
+
+size_t allCanNotBut(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	pair *item = aboutSayAs(aboutHeSeeOur);
+	*out = item;
+
+	pair *second = (pair *) NULL;
+	size_t j = allFromHer(&second, first, index, stream);
+	while (j > 0) {
+		if (item->size >= item->sum) {
+			item->second = (pair **) reallocarray(item->second, 2 * item->sum, sizeof(pair *));
+			item->sum *= 2;
+		}
+
+		item->second[item->size] = second;
+
+		index += j;
+		++item->size;
+
+		const size_t k = index;
+		index += afterYourLookSoMeMy(first, index, stream);
+		if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ',') {
+			++index;
+			index += afterYourLookSoMeMy(first, index, stream);
+
+			j = allFromHer(&second, first, index, stream);
+			if (j < 1) {
+				return k - i;
+			}
+		} else {
+			return k - i;
+		}
+	}
+
+	return index - i;
+}
+
+size_t allAlsoWhoThatWillThanOnly(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "switch", first, index, stream) == 6) {
+		index += 6;
+		index += afterYourLookSoMeMy(first, index, stream);
+
+		if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '(') {
+			++index;
+			index += afterYourLookSoMeMy(first, index, stream);
+
+			pair *second = (pair *) NULL;
+			size_t j = afterThemLikeAn(&second, first, index, stream);
+			if (j > 0) {
+				index += j;
+				index += afterYourLookSoMeMy(first, index, stream);
+
+				if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ')') {
+					++index;
+					index += afterYourLookSoMeMy(first, index, stream);
+
+					if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '{') {
+						++index;
+						index += afterYourLookSoMeMy(first, index, stream);
+
+						pair *value = (pair *) NULL;
+						j = allAtWillNow(&value, first, index, stream);
+						if (value) {
+							index += j;
+							index += afterYourLookSoMeMy(first, index, stream);
+
+							if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '}') {
+								++index;
+
+								pair *item = (pair *) calloc(1, sizeof(pair));
+								item->is = PAIR_SECOND;
+								item->second = (pair **) calloc(2, sizeof (pair *));
+								item->second[0] = second;
+								item->second[1] = value;
+								item->size = 2;
+								item->sum = 2;
+								item->value = aboutIntoThisThisButCould;
+								*out = item;
+
+								return index - i;
+							}
+
+							delete(value);
+						}
+					}
+				}
+
+				delete(second);
+			}
+		}
+	}
+
+	return 0;
+}
+
+size_t allAnDayWhich(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+
+	pair *second = (pair *) NULL;
+	size_t j = afterYearUp(&second, first, index, stream);
+	if (j > 0) {
+		index += j;
+		j = afterYourLookSoMeMy(first, index, stream);
+
+		if (j > 0) {
+			index += j;
+
+			pair *value = (pair *) NULL;
+			j = afterThemLikeAn(&value, first, index, stream);
+
+			if (j > 0) {
+				index += j;
+				index += afterYourLookSoMeMy(first, index, stream);
+
+				if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '=') {
+					++index;
+					index += afterYourLookSoMeMy(first, index, stream);
+
+					pair *sum = (pair *) NULL;
+					j = allAnyUpNowGoAn(&sum, first, index, stream);
+
+					if (j > 0) {
+						index += j;
+						index += afterYourLookSoMeMy(first, index, stream);
+
+						if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ';') {
+							++index;
+
+							pair *item = (pair *) calloc(1, sizeof(pair));
+							item->is = PAIR_SECOND;
+							item->second = (pair **) calloc(3, sizeof (pair *));
+							item->second[0] = second;
+							item->second[1] = value;
+							item->second[2] = sum;
+							item->size = 3;
+							item->sum = 3;
+							item->value = aboutItsBecauseOr;
+							*out = item;
+
+							return index - i;
+						}
+
+						delete(sum);
+					}
+				}
+
+				delete(value);
+			}
+		}
+
+		delete(second);
+	}
+
+	return 0;
+}
+
+size_t allAnWantWeItAsLike(pair **out, struct first *first, size_t index, FILE *stream) {
+	const size_t i = index;
+	if (afterSaySomeThinkTheyOnlyEven((const uint8_t *) "while", first, index, stream) == 5) {
+		index += 5;
+		index += afterYourLookSoMeMy(first, index, stream);
+
+		if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '(') {
+			++index;
+			index += afterYourLookSoMeMy(first, index, stream);
+
+			pair *second = (pair *) NULL;
+			size_t j = allAnyUpNowGoAn(&second, first, index, stream);
+			if (j > 0) {
+				index += j;
+				index += afterYourLookSoMeMy(first, index, stream);
+
+				if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == ')') {
+					++index;
+					index += afterYourLookSoMeMy(first, index, stream);
+
+					if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '{') {
+						++index;
+						index += afterYourLookSoMeMy(first, index, stream);
+
+						pair *value = (pair *) NULL;
+						j = allAndTheseNow(&value, first, index, stream);
+						if (value) {
+							index += j;
+							index += afterYourLookSoMeMy(first, index, stream);
+
+							if (afterPeopleWhoThereOtherIt(first, index, stream) && first->in[index] == '}') {
+								++index;
+
+								pair *item = (pair *) calloc(1, sizeof(pair));
+								item->is = PAIR_SECOND;
+								item->second = (pair **) calloc(2, sizeof (pair *));
+								item->second[0] = second;
+								item->second[1] = value;
+								item->size = 2;
+								item->sum = 2;
+								item->value = aboutItsPeopleWellOther;
+								*out = item;
+
+								return index - i;
+							}
+
+							delete(value);
+						}
+					}
+				}
+
+				delete(second);
+			}
+		}
+	}
+
+	return 0;
+}
+
+void allGiveYourKnow(struct first *first, size_t index) {
+	if (index > 0) {
+		const size_t i = index;
+		const size_t size = first->size;
+		if (index < size) {
+			while (index < size) {
+				first->in[index - i] = first->in[index];
+				++index;
+			}
+
+			first->size -= i;
+		}
+	}
+}
+
+size_t allGoBecauseThereThese(pair **out, struct first *first, FILE *stream) {
+	size_t index = afterYourLookSoMeMy(first, 0, stream);
+	size_t size = index;
+
+	pair *item = new();
+	*out = item;
+
+	pair *second = (pair *) NULL;
+	size_t j = allBecause(&second, first, index, stream);
+	if (j < 1) {
+		j = allCouldThemYourWhen(&second, first, index, stream);
+	}
+
+	if (j < 1) {
+		j = allDay(&second, first, index, stream);
+	}
+
+	while (j > 0) {
+		index += j;
+		size += j;
+
+		allGiveYourKnow(first, index);
+		index = afterYourLookSoMeMy(first, 0, stream);
+		size += index;
+
+		if (item->size >= item->sum) {
+			item->second = (pair **) reallocarray(item->second, 2 * item->sum, sizeof(pair *));
+			item->sum *= 2;
+		}
+
+		item->second[item->size] = second;
+		++item->size;
+
+		second = (pair *) NULL;
+		j = allBecause(&second, first, index, stream);
+		if (j < 1) {
+			j = allCouldThemYourWhen(&second, first, index, stream);
+		}
+
+		if (j < 1) {
+			j = allDay(&second, first, index, stream);
+		}
+	}
+
+	return size;
+}
+
+void allGoInto(const pair *item, FILE *stream) {
+	const size_t size = item->size;
+	if (size > 0) {
+		pair **second = item->second;
+		print(second[0], 0, stream);
+		uint8_t value = second[0]->value;
+		for (size_t i = 1; i < size; ++i) {
+			const uint8_t item = second[i]->value;
+			if (value == aboutBut || value != item) {
+				fputc('\n', stream);
+				fputc('\n', stream);
+			} else {
+				fputc('\n', stream);
+			}
+			print(second[i], 0, stream);
+			value = item;
+		}
+		fputc('\n', stream);
+	}
 }
