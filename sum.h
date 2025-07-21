@@ -3551,3 +3551,787 @@ void allGoInto(const pair *item, FILE *stream) {
 		fputc('\n', stream);
 	}
 }
+
+struct second {
+	uint8_t *is;
+	struct first first;
+	union {
+		struct second **second;
+		pair *value;
+	};
+	size_t index;
+	size_t size;
+	size_t sum;
+};
+
+int allGoodGoSheYouHe(const char *first, const char *second) {
+	while (*first && *second) {
+		int i = *first - *second;
+		if (i) {
+			return i;
+		}
+
+		++first;
+		++second;
+	}
+
+	return *first - *second;
+}
+
+struct second *allHerWhichButYouMe() {
+	struct second *item = (struct second *) calloc(1, sizeof(struct second));
+	item->is = (uint8_t *) calloc(1, sizeof(uint8_t));
+	item->first.in = (uint8_t *) calloc(1, sizeof(uint8_t));
+	item->first.sum = 1;
+	item->value = new();
+	return item;
+}
+
+struct second *allHimThe(uint8_t value) {
+	struct second *item = (struct second *) calloc(1, sizeof(struct second));
+	item->is = (uint8_t *) calloc(1, sizeof(uint8_t));
+	item->first.in = (uint8_t *) calloc(1, sizeof(uint8_t));
+	item->first.sum = 1;
+	item->second = (struct second **) calloc(1, sizeof(struct second *));
+	item->sum = 1;
+
+	if (value & 7) {
+		const uint8_t out = value + 1;
+
+		switch (byte() & 1) {
+			case 0:
+				item->second[0] = allHimThe(out);
+				break;
+			default:
+				item->second[0] = allHerWhichButYouMe();
+				break;
+		}
+		item->size = 1;
+
+		uint8_t i = byte() & 7;
+		if (item->second[0]->sum) {
+			if (item->size >= item->sum) {
+				item->second = (struct second **) reallocarray(item->second, 2 * item->sum, sizeof(struct second *));
+				item->sum *= 2;
+			}
+
+			switch (byte() & 1) {
+				case 0:
+					item->second[1] = allHimThe(out);
+					break;
+				default:
+					item->second[1] = allHerWhichButYouMe();
+					break;
+			}
+			item->size = 2;
+
+			if (i > 0) {
+				--i;
+			}
+		}
+
+		while (i > 0) {
+			if (item->size >= item->sum) {
+				item->second = (struct second **) reallocarray(item->second, 2 * item->sum, sizeof(struct second *));
+				item->sum *= 2;
+			}
+
+			switch (byte() & 1) {
+				case 0:
+					item->second[item->size] = allHimThe(out);
+					break;
+				default:
+					item->second[item->size] = allHerWhichButYouMe();
+					break;
+			}
+
+			++item->size;
+			--i;
+		}
+	} else {
+		item->second[0] = allHerWhichButYouMe();
+		item->size = 1;
+
+		uint8_t i = byte() & 7;
+		while (i > 0) {
+			if (item->size >= item->sum) {
+				item->second = (struct second **) reallocarray(item->second, 2 * item->sum, sizeof(struct second *));
+				item->sum *= 2;
+			}
+
+			item->second[item->size] = allHerWhichButYouMe();
+
+			++item->size;
+			--i;
+		}
+	}
+
+	return item;
+}
+
+struct second *allItsThink(size_t size) {
+	if (size > 0) {
+		struct second *item = (struct second *) calloc(1, sizeof(struct second));
+		const size_t i = (size - 1) >> 3;
+		item->is = (uint8_t *) calloc(1 + i, sizeof(uint8_t));
+		for (size_t j = 0; j <= i; ++j) {
+			item->is[j] = byte();
+		}
+		const uint8_t j = size & 7;
+		if (j) {
+			item->is[i] &= (uint8_t) -1 << (8 - j);
+		}
+
+		item->first.in = (uint8_t *) calloc(1, sizeof(uint8_t));
+		item->first.sum = 1;
+		item->value = new();
+		item->index = size;
+		return item;
+	} else {
+		return allHerWhichButYouMe();
+	}
+}
+
+struct second *allJustSeeThatOurCome(size_t size, uint8_t value) {
+	if (size > 0) {
+		struct second *item = (struct second *) calloc(1, sizeof(struct second));
+		size_t i = integer() % (size + 1);
+		if (i > 0) {
+			const size_t j = (i - 1) >> 3;
+			item->is = (uint8_t *) calloc(1 + j, sizeof(uint8_t));
+			for (size_t k = 0; k <= j; ++k) {
+				item->is[k] = byte();
+			}
+			const uint8_t k = i & 7;
+			if (k) {
+				item->is[j] &= (uint8_t) -1 << (8 - k);
+			}
+
+			item->index = i;
+		} else {
+			item->is = (uint8_t *) calloc(1, sizeof(uint8_t));
+		}
+
+		item->first.in = (uint8_t *) calloc(1, sizeof(uint8_t));
+		item->first.sum = 1;
+		item->second = (struct second **) calloc(1, sizeof(struct second *));
+		item->sum = 1;
+
+		size_t j = i;
+		if (value & 7) {
+			const uint8_t out = value + 1;
+
+			uint8_t k = byte() & 7;
+			if (k) {
+				i = integer() % (size - j + 1);
+				switch (byte() & 1) {
+					case 0:
+						item->second[0] = allJustSeeThatOurCome(i, out);
+						break;
+					default:
+						item->second[0] = allItsThink(i);
+						break;
+				}
+				item->size = 1;
+				j += i;
+
+				while (--k > 0) {
+					if (item->size >= item->sum) {
+						item->second = (struct second **) reallocarray(item->second, 2 * item->sum, sizeof(struct second *));
+						item->sum *= 2;
+					}
+
+					i = integer() % (size - j + 1);
+					switch (byte() & 1) {
+						case 0:
+							item->second[item->size] = allJustSeeThatOurCome(i, out);
+							break;
+						default:
+							item->second[item->size] = allItsThink(i);
+							break;
+					}
+					j += i;
+
+					++item->size;
+				}
+
+				if (item->size >= item->sum) {
+					item->second = (struct second **) reallocarray(item->second, 2 * item->sum, sizeof(struct second *));
+					item->sum *= 2;
+				}
+
+				switch (byte() & 1) {
+					case 0:
+						item->second[item->size] = allJustSeeThatOurCome(size - j, out);
+						break;
+					default:
+						item->second[item->size] = allItsThink(size - j);
+						break;
+				}
+				++item->size;
+			} else {
+				item->second[0] = allItsThink(size - j);
+				item->size = 1;
+			}
+		} else {
+			uint8_t k = byte() & 7;
+			while (k > 0) {
+				if (item->size >= item->sum) {
+					item->second = (struct second **) reallocarray(item->second, 2 * item->sum, sizeof(struct second *));
+					item->sum *= 2;
+				}
+
+				i = integer() % (size - j + 1);
+				item->second[item->size] = allItsThink(i);
+				j += i;
+
+				++item->size;
+				--k;
+			}
+
+			if (item->size >= item->sum) {
+				item->second = (struct second **) reallocarray(item->second, 2 * item->sum, sizeof(struct second *));
+				item->sum *= 2;
+			}
+
+			item->second[item->size] = allItsThink(size - j);
+			++item->size;
+		}
+
+		return item;
+	} else {
+		return allHimThe(value);
+	}
+}
+
+void allLookGood(struct first *first, const char *second) {
+	while (*second) {
+		if (first->size >= first->sum) {
+			first->in = (uint8_t *) reallocarray(first->in, 2 * first->sum, sizeof(uint8_t));
+			first->sum *= 2;
+		}
+
+		first->in[first->size] = *second;
+		++first->size;
+		++second;
+	}
+}
+
+void allLookWantGood(struct first *first, uint8_t in) {
+	if (first->size >= first->sum) {
+		first->in = (uint8_t *) reallocarray(first->in, 2 * first->sum, sizeof(uint8_t));
+		first->sum *= 2;
+	}
+
+	first->in[first->size] = in;
+	++first->size;
+}
+
+void allMy(struct second *item) {
+	struct first *first = &item->first;
+	first->size = 0;
+
+	const size_t size = item->index;
+	if (size > 0) {
+		uint8_t out = 0;
+		size_t i = integer() % (size + 1);
+		if (i > 3) {
+			i = 3;
+		}
+
+		if (i) {
+			splice(&out, item->is, 0, i);
+			out >>= (8 - i);
+
+			switch (i) {
+				case 1:
+					allLookGood(first, afterItsWantComeWithOf[byte() & 3][1 + out]);
+					break;
+				case 2:
+					allLookGood(first, afterItsWantComeWithOf[byte() & 3][3 + out]);
+					break;
+				default:
+					allLookGood(first, afterItsWantComeWithOf[byte() & 3][7 + out]);
+					break;
+			}
+		} else {
+			allLookGood(first, afterItsWantComeWithOf[byte() & 3][0]);
+		}
+
+		size_t j = i;
+		while (j < size) {
+			i = integer() % (size - j + 1);
+			if (i > 3) {
+				i = 3;
+			}
+
+			if (i) {
+				splice(&out, item->is, j, i);
+				out >>= (8 - i);
+
+				uint8_t k = out + 1;
+				switch (i) {
+					case 1:
+						break;
+					case 2:
+						k += 2;
+						break;
+					default:
+						k += 6;
+						break;
+				}
+
+				const char *l = afterItsWantComeWithOf[byte() & 3][k];
+				allLookWantGood(first, *l - 32);
+				allLookGood(first, l + 1);
+
+				j += i;
+			} else {
+				const char *j = afterItsWantComeWithOf[byte() & 3][0];
+				allLookWantGood(first, *j - 32);
+				allLookGood(first, j + 1);
+			}
+		}
+	} else {
+		allLookGood(first, afterItsWantComeWithOf[byte() & 3][0]);
+
+		uint8_t i = byte() & 3;
+		while (i > 0) {
+			const char *j = afterItsWantComeWithOf[byte() & 3][0];
+			allLookWantGood(first, *j - 32);
+			allLookGood(first, j + 1);
+			--i;
+		}
+	}
+
+	if (!item->sum) {
+		allLookWantGood(first, '.');
+		switch (byte() & 1) {
+			case 0:
+				allLookWantGood(first, 'c');
+				break;
+			default:
+				allLookWantGood(first, 'h');
+				break;
+		}
+	}
+
+	if (first->size >= first->sum) {
+		first->in = (uint8_t *) reallocarray(first->in, 2 * first->sum, sizeof(uint8_t));
+		first->sum *= 2;
+	}
+	first->in[first->size] = 0;
+}
+
+void allNoKnowThere(struct second *item) {
+	allMy(item);
+
+	if (item->sum) {
+		const size_t size = item->size;
+		if (size > 0) {
+			struct second **second = item->second;
+			allNoKnowThere(*second);
+
+			for (size_t i = 1; i < size; ++i) {
+				struct second *first = second[i];
+				allNoKnowThere(first);
+
+				uint8_t j = 1;
+				while (j) {
+					j = 0;
+
+					for (size_t k = 0; k < i; ++k) {
+						if (!allGoodGoSheYouHe((const char *) second[k]->first.in, (const char *) first->first.in)) {
+							allMy(first);
+							j = 1;
+							break;
+						}
+					}
+				}
+
+				for (size_t j = i; j > 0; --j) {
+					int k = allGoodGoSheYouHe((const char *) second[j - 1]->first.in, (const char *) first->first.in);
+					if (k < 0) {
+						break;
+					} else {
+						second[j] = second[j - 1];
+						second[j - 1] = first;
+					}
+				}
+			}
+		}
+	}
+}
+
+struct second *allNoWithWellBecauseAndThey() {
+	struct second *item = (struct second *) calloc(1, sizeof(struct second));
+	item->second = (struct second **) calloc(1, sizeof(struct second *));
+	item->sum = 1;
+	return item;
+}
+
+void allNot(struct second *first, struct second *item) {
+	if (item->sum) {
+		const size_t size = item->size;
+		struct second **second = item->second;
+		for (size_t i = 0; i < size; ++i) {
+			allNot(first, *second);
+			++second;
+		}
+	} else {
+		if (first->size >= first->sum) {
+			first->second = (struct second **) reallocarray(first->second, 2 * first->sum, sizeof(struct second *));
+			first->sum *= 2;
+		}
+
+		first->second[first->size] = item;
+		++first->size;
+	}
+}
+
+void allOneWantEvenMake(struct second *item) {
+	free(item->second);
+	free(item);
+}
+
+void allOnlyIt(const struct second *item, uint8_t *in, uint8_t *index, struct first *first) {
+	const size_t size = item->index;
+	if (size > 0) {
+		const size_t sum = (size - 1) >> 3;
+		const uint8_t value = *index & 7;
+		const uint8_t *out = item->first.in;
+		if (value) {
+			const uint8_t j = 8 - value;
+			for (size_t i = 0; i < sum; ++i) {
+				*in |= out[i] >> value;
+				allLookWantGood(first, *in);
+				*in = out[i] << j;
+			}
+		} else {
+			*in = 0;
+			for (size_t i = 0; i < sum; ++i) {
+				allLookWantGood(first, out[i]);
+			}
+		}
+
+		uint8_t i = out[sum];
+		const uint8_t j = size & 7;
+		if (j) {
+			const uint8_t k = j + value;
+			if (k > 7) {
+				*in |= i >> value;
+				allLookWantGood(first, *in);
+				*in = i << (8 - value);
+				*index = k & 7;
+			} else {
+				*in |= i >> value;
+				*index += j;
+			}
+		} else {
+			*in |= i >> value;
+			allLookWantGood(first, *in);
+			*in = i << (8 - value);
+		}
+	}
+}
+
+void allOr(const struct second *item, uint8_t *in, uint8_t *index, struct first *first) {
+	allOnlyIt(item, in, index, first);
+
+	if (item->sum) {
+		const size_t size = item->size;
+		struct second **second = item->second;
+		for (size_t i = 0; i < size; ++i) {
+			allOr(*second, in, index, first);
+			++second;
+		}
+	}
+}
+
+size_t allOtherSoWould(const struct first *first) {
+	if (first->size < sizeof(size_t)) {
+		const size_t size = first->size;
+		if (size > 0) {
+			size_t i = first->in[0];
+			for (size_t j = 1; j < size; ++j) {
+				i <<= 8;
+				i |= first->in[j];
+			}
+			return i;
+		} else {
+			return 0;
+		}
+	} else {
+		size_t i = first->in[0];
+		for (size_t j = 1; j < sizeof(size_t); ++j) {
+			i <<= 8;
+			i |= first->in[j];
+		}
+		return i;
+	}
+}
+
+void allPeopleUseBack(pair *out, uint8_t *in, size_t size, FILE *stream) {
+	size_t i = fread(in, sizeof(uint8_t), size, stream);
+
+	while (i > 0) {
+		afterGoThatAfterWeWhenOr(out, in, 0, i << 3);
+		i = fread(in, sizeof(uint8_t), size, stream);
+	}
+}
+
+void allSo(uint8_t *out, size_t size) {
+	uint8_t *in = out + sizeof(size_t) - 1;
+	for (size_t j = 0; j < sizeof(size_t); ++j) {
+		*in = (uint8_t) -1 & size;
+		size >>= 8;
+		--in;
+	}
+}
+
+void allSome(struct second *out, uint8_t *in, size_t index, size_t size, FILE *stream) {
+	pair *second = out->second[index % out->size]->value;
+	size_t i = fread(in, sizeof(uint8_t), size, stream);
+	uint8_t value[sizeof(size_t)];
+
+	if (i > 0) {
+		i <<= 3;
+
+		size_t j = integer() % i;
+		allSo(value, ++j);
+		afterGoThatAfterWeWhenOr(second, value, 0, 8 * sizeof(size_t));
+		afterGoThatAfterWeWhenOr(second, in, 0, j);
+
+		size_t k = j;
+		while (k < i) {
+			index = integer();
+			allSo(value, index);
+			afterGoThatAfterWeWhenOr(second, value, 0, 8 * sizeof(size_t));
+			second = out->second[index % out->size]->value;
+
+			j = integer() % (i - k);
+			allSo(value, ++j);
+			afterGoThatAfterWeWhenOr(second, value, 0, 8 * sizeof(size_t));
+			afterGoThatAfterWeWhenOr(second, in, k, j);
+			k += j;
+		}
+
+		i = fread(in, sizeof(uint8_t), size, stream);
+	}
+
+	while (i > 0) {
+		i <<= 3;
+
+		index = integer();
+		allSo(value, index);
+		afterGoThatAfterWeWhenOr(second, value, 0, 8 * sizeof(size_t));
+		second = out->second[index % out->size]->value;
+
+		size_t j = integer() % i;
+		allSo(value, ++j);
+		afterGoThatAfterWeWhenOr(second, value, 0, 8 * sizeof(size_t));
+		afterGoThatAfterWeWhenOr(second, in, 0, j);
+
+		size_t k = j;
+		while (k < i) {
+			index = integer();
+			allSo(value, index);
+			afterGoThatAfterWeWhenOr(second, value, 0, 8 * sizeof(size_t));
+			second = out->second[index % out->size]->value;
+
+			j = integer() % (i - k);
+			allSo(value, ++j);
+			afterGoThatAfterWeWhenOr(second, value, 0, 8 * sizeof(size_t));
+			afterGoThatAfterWeWhenOr(second, in, k, j);
+			k += j;
+		}
+
+		i = fread(in, sizeof(uint8_t), size, stream);
+	}
+}
+
+void allTakeHisSoBackNoNo(const pair *item, uint8_t *in, uint8_t *index, struct first *first) {
+	const size_t size = item->size;
+	if (size > 0) {
+		const size_t sum = (size - 1) >> 3;
+		const uint8_t value = *index & 7;
+		const uint8_t *out = item->first;
+		if (value) {
+			const uint8_t j = 8 - value;
+			for (size_t i = 0; i < sum; ++i) {
+				*in |= out[i] >> value;
+				allLookWantGood(first, *in);
+				*in = out[i] << j;
+			}
+		} else {
+			*in = 0;
+			for (size_t i = 0; i < sum; ++i) {
+				allLookWantGood(first, out[i]);
+			}
+		}
+
+		uint8_t i = out[sum];
+		const uint8_t j = size & 7;
+		if (j) {
+			const uint8_t k = j + value;
+			if (k > 7) {
+				*in |= i >> value;
+				allLookWantGood(first, *in);
+				*in = i << (8 - value);
+				*index = k & 7;
+			} else {
+				*in |= i >> value;
+				*index += j;
+			}
+		} else {
+			*in |= i >> value;
+			allLookWantGood(first, *in);
+			*in = i << (8 - value);
+		}
+	}
+}
+
+void allTakeWill(const pair *item, uint8_t *in, uint8_t *index, struct first *first) {
+	switch (item->is) {
+		case PAIR_FIRST:
+			allTakeHisSoBackNoNo(item, in, index, first);
+			break;
+		case PAIR_SECOND:
+			const size_t size = item->size;
+			pair **second = item->second;
+			for (size_t i = 0; i < size; ++i) {
+				allTakeWill(*second, in, index, first);
+				++second;
+			}
+			break;
+	}
+}
+
+void allThatOurCanAnOf(const struct second *item, size_t index, FILE *stream) {
+	const size_t size = item->size;
+	const struct second **second = (const struct second **) item->second;
+	uint8_t value[sizeof(size_t)];
+
+	struct first **out = (struct first **) calloc(size, sizeof(struct first *));
+	for (size_t i = 0; i < size; ++i) {
+		struct first *first = (struct first *) calloc(1, sizeof(struct first));
+		first->in = (uint8_t *) calloc(1, sizeof(uint8_t));
+		first->sum = 1;
+
+		uint8_t in = 0;
+		uint8_t index = 0;
+		allTakeWill(second[i]->value, &in, &index, first);
+		if (index) {
+			allLookWantGood(first, in);
+		}
+		first->size <<= 3;
+		first->size |= index;
+		first->sum = 0;
+
+		out[i] = first;
+	}
+
+	struct first *first = out[index % size];
+	uint8_t i = 0;
+	uint8_t j = 0;
+	while (first->size >= 8 * sizeof(size_t)) {
+		splice(value, first->in, first->sum, 8 * sizeof(size_t));
+		size_t k = *value;
+		for (size_t i = 1; i < sizeof(size_t); ++i) {
+			k <<= 8;
+			k |= value[i];
+		}
+
+		first->size -= 8 * sizeof(size_t);
+		first->sum += 8 * sizeof(size_t);
+		if (first->size > 0 && k > 0) {
+			const size_t index = (k - 1) >> 3;
+			const uint8_t size = k & 7;
+
+			uint8_t *in = (uint8_t *) calloc(1 + index, sizeof(uint8_t));
+			splice(in, first->in, first->sum, k);
+
+			if (j) {
+				const uint8_t l = 8 - j;
+				for (size_t k = 0; k < index; ++k) {
+					i |= in[k] >> j;
+					fputc(i, stream);
+					i = in[k] << l;
+				}
+			} else {
+				i = 0;
+				for (size_t k = 0; k < index; ++k) {
+					fputc(in[k], stream);
+				}
+			}
+
+			if (size) {
+				const uint8_t value = size + j;
+				if (value > 7) {
+					if (j) {
+						i |= in[index] >> j;
+						fputc(i, stream);
+						i = in[index] << (8 - j);
+						j = value & 7;
+					} else {
+						fputc(in[index], stream);
+					}
+				} else if (j) {
+					i |= in[index] >> j;
+					j = value;
+				} else {
+					i = in[index];
+					j = value;
+				}
+			} else if (j) {
+				i |= in[index] >> j;
+				fputc(i, stream);
+				i = in[index] << (8 - j);
+			} else {
+				fputc(in[index], stream);
+			}
+
+			free(in);
+			first->size -= k;
+			first->sum += k;
+		}
+
+		if (first->size < 8 * sizeof(size_t)) {
+			break;
+		} else {
+			splice(value, first->in, first->sum, 8 * sizeof(size_t));
+			index = *value;
+			for (size_t i = 1; i < sizeof(size_t); ++i) {
+				index <<= 8;
+				index |= value[i];
+			}
+			first->size -= 8 * sizeof(size_t);
+			first->sum += 8 * sizeof(size_t);
+			first = out[index % size];
+		}
+	}
+
+	for (size_t i = 0; i < size; ++i) {
+		struct first *first = out[i];
+		free(first->in);
+		free(first);
+	}
+	free(out);
+}
+
+void allThemSayAlso(struct second *item) {
+	if (item->sum) {
+		const size_t size = item->size;
+		struct second **second = item->second;
+		for (size_t i = 0; i < size; ++i) {
+			allThemSayAlso(second[i]);
+		}
+		free(second);
+	} else {
+		delete(item->value);
+	}
+
+	free(item->is);
+	free(item->first.in);
+	free(item);
+}
