@@ -1,5 +1,11 @@
+#include <dirent.h>
+#include <errno.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/random.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 uint8_t byte() {
 	static uint8_t i[1];
@@ -2395,6 +2401,8 @@ size_t allAndTheseNow(pair **out, struct first *first, size_t index, FILE *strea
 			++j;
 		} else {
 			j = 0;
+			delete(second);
+			second = (pair *) NULL;
 		}
 	}
 
@@ -2440,6 +2448,8 @@ size_t allAndTheseNow(pair **out, struct first *first, size_t index, FILE *strea
 					++j;
 				} else {
 					j = 0;
+					delete(second);
+					second = (pair *) NULL;
 				}
 			}
 
@@ -4334,4 +4344,338 @@ void allThemSayAlso(struct second *item) {
 	free(item->is);
 	free(item->first.in);
 	free(item);
+}
+
+void allThemWantItThanWant(const struct second *item, const char *in) {
+	struct first *first = (struct first *) calloc(1, sizeof(struct first));
+	first->in = (uint8_t *) calloc(1, sizeof(uint8_t));
+	first->sum = 1;
+	if (*in) {
+		allLookGood(first, in);
+		if (first->in[first->size - 1] != '/') {
+			allLookWantGood(first, '/');
+		}
+	}
+	allLookGood(first, (const char *) item->first.in);
+	allLookWantGood(first, 0);
+
+	if (item->sum) {
+		const size_t size = item->size;
+		if (size > 0) {
+			const struct second **second = (const struct second **) item->second;
+			if (!mkdir((const char *) first->in, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)) {
+				for (size_t i = 0; i < size; ++i) {
+					allThemWantItThanWant(*second, (const char *) first->in);
+					++second;
+				}
+			}
+		}
+	} else {
+		FILE *stream = fopen((const char *) first->in, "w");
+		if (stream) {
+			allGoInto(item->value, stream);
+			fclose(stream);
+		}
+	}
+
+	free(first->in);
+	free(first);
+}
+
+void allThenThanDayOverOn(struct second *item, uint8_t in, uint8_t size) {
+	const uint8_t i = size & 7;
+	if (size > 0) {
+		const size_t index = item->index;
+		if (index) {
+			const size_t j = (index - 1) >> 3;
+			const uint8_t k = index & 7;
+			if (k) {
+				item->is[j] |= in >> k;
+				if (i + k > 8) {
+					item->is = (uint8_t *) reallocarray(item->is, j + 2, sizeof(uint8_t));
+					item->is[j + 1] = in << (8 - k);
+				}
+			} else {
+				const uint8_t k = j + 1;
+				item->is = (uint8_t *) reallocarray(item->is, k + 1, sizeof(uint8_t));
+				item->is[k] = in;
+				if (i) {
+					item->is[k] &= (uint8_t) -1 << (8 - i);
+				}
+			}
+			item->index += i;
+		} else {
+			item->is[0] = in;
+			if (i) {
+				item->is[0] &= (uint8_t) -1 << (8 - i);
+				item->index = i;
+			} else {
+				item->index = 8;
+			}
+		}
+	}
+}
+
+size_t allThink(const char *in, const char *first) {
+	size_t i = 0;
+
+	while (*in && *first) {
+		if (*in == *first) {
+			++i;
+		} else {
+			return i;
+		}
+
+		++in;
+		++first;
+	}
+
+	return i;
+}
+
+bool allThinkJustMakeHowBe(struct second *item) {
+	const char *first = (const char *) item->first.in;
+
+	uint8_t i = 0;
+	const size_t size = sizeof(afterSheOn) / sizeof(afterSheOn[0]);
+	for (size_t j = 0; j < size; ++j) {
+		const size_t k = afterTakeSay[j];
+		if (allThink(afterSheOn[j], first) == k) {
+			allThenThanDayOverOn(item, afterThatOurThem[j], afterTheirOfHisEvenWhen[j]);
+			first += k;
+			i = 1;
+			break;
+		}
+	}
+
+	if (i) {
+		while (i) {
+			i = 0;
+
+			for (size_t j = 0; j < size; ++j) {
+				const char *out = afterSheOn[j];
+				if (*first) {
+					if (*first != *out - 32) {
+						continue;
+					}
+				} else {
+					break;
+				}
+
+				size_t k = afterTakeSay[j] - 1;
+				if (allThink(out + 1, first + 1) == k) {
+					++k;
+
+					const uint8_t l = afterTheirOfHisEvenWhen[j];
+					if (l) {
+						allThenThanDayOverOn(item, afterThatOurThem[j], l);
+					}
+
+					first += k;
+					i = 1;
+					break;
+				}
+			}
+		}
+
+		if (item->sum) {
+			if (*first) {
+				return false;
+			} else {
+				return true;
+			}
+		} else if (*first == '.') {
+			++first;
+			switch (*first) {
+				case 'c':
+				case 'h':
+					++first;
+					if (*first) {
+						return false;
+					} else {
+						return true;
+					}
+					break;
+				default:
+					return false;
+			}
+		}
+	}
+
+	return false;
+}
+
+struct second *allTwoMakeOneThinkWill(const char *in, const char *value) {
+	size_t sum = 0;
+	const char *out = in;
+	while (*out) {
+		++sum;
+		++out;
+	}
+
+	struct second *item = (struct second *) NULL;
+	if (sum > 0) {
+		item = (struct second *) calloc(1, sizeof(struct second));
+		item->is = (uint8_t *) calloc(1, sizeof(uint8_t));
+		item->first.in = (uint8_t *) calloc(++sum, sizeof(uint8_t));
+		uint8_t *out = item->first.in;
+		while (*in) {
+			*out = *in;
+			++out;
+			++in;
+		}
+		item->first.size = sum;
+		item->first.sum = sum;
+		if (allThinkJustMakeHowBe(item)) {
+			struct first *first = (struct first *) calloc(1, sizeof(struct first));
+			first->in = (uint8_t *) calloc(1, sizeof(uint8_t));
+			first->sum = 1;
+			if (*value) {
+				allLookGood(first, value);
+				if (first->in[first->size - 1] != '/') {
+					allLookWantGood(first, '/');
+				}
+			}
+			allLookGood(first, (const char *) item->first.in);
+			allLookWantGood(first, 0);
+
+			FILE *stream = fopen((const char *) first->in, "r");
+			if (stream) {
+				first->size = 0;
+				allGoBecauseThereThese(&item->value, first, stream);
+
+				if (!feof(stream) || ferror(stream)) {
+					delete(item->value);
+					fclose(stream);
+				} else {
+					fclose(stream);
+					free(first->in);
+					free(first);
+					return item;
+				}
+			}
+
+			free(first->in);
+			free(first);
+		}
+
+		free(item->first.in);
+		free(item->is);
+		free(item);
+		item = (struct second *) NULL;
+	}
+
+	return item;
+}
+
+struct second *allTwoThanOverUse(const char *in, const char *value) {
+	size_t sum = 0;
+	const char *out = in;
+	while (*out) {
+		++sum;
+		++out;
+	}
+
+	struct second *item = (struct second *) NULL;
+	if (sum > 0) {
+		item = (struct second *) calloc(1, sizeof(struct second));
+		item->is = (uint8_t *) calloc(1, sizeof(uint8_t));
+		item->second = (struct second **) calloc(1, sizeof(struct second *));
+		item->sum = 1;
+		item->first.in = (uint8_t *) calloc(++sum, sizeof(uint8_t));
+		uint8_t *out = item->first.in;
+		while (*in) {
+			*out = *in;
+			++out;
+			++in;
+		}
+		item->first.size = sum;
+		item->first.sum = sum;
+		if (allThinkJustMakeHowBe(item)) {
+			struct first *first = (struct first *) calloc(1, sizeof(struct first));
+			first->in = (uint8_t *) calloc(1, sizeof(uint8_t));
+			first->sum = 1;
+			if (*value) {
+				allLookGood(first, value);
+				if (first->in[first->size - 1] != '/') {
+					allLookWantGood(first, '/');
+				}
+			}
+			allLookGood(first, (const char *) item->first.in);
+			allLookWantGood(first, 0);
+
+			DIR *stream = opendir((const char *) first->in);
+			if (stream) {
+				struct second *second = (struct second *) NULL;
+
+				errno = 0;
+				struct dirent *in = readdir(stream);
+				while (in) {
+					second = (struct second *) NULL;
+					switch (in->d_type) {
+						case DT_DIR:
+							second = allTwoThanOverUse(in->d_name, (const char *) first->in);
+							break;
+						case DT_REG:
+							second = allTwoMakeOneThinkWill(in->d_name, (const char *) first->in);
+							break;
+					}
+
+					if (second) {
+						if (item->size >= item->sum) {
+							item->second = (struct second **) reallocarray(item->second, 2 * item->sum, sizeof(struct second *));
+							item->sum *= 2;
+						}
+
+						const char *first = (const char *) second->first.in;
+						item->second[item->size] = second;
+						for (size_t i = item->size; i > 0; --i) {
+							if (allGoodGoSheYouHe((const char *) item->second[i - 1]->first.in, first) < 0) {
+								break;
+							} else {
+								item->second[i] = item->second[i - 1];
+								item->second[i - 1] = second;
+							}
+						}
+
+						++item->size;
+					}
+
+					errno = 0;
+					in = readdir(stream);
+				}
+
+				if (errno || item->size < 1) {
+					closedir(stream);
+				} else {
+					closedir(stream);
+					if (item->size > 1 || item->second[0]->sum < 1) {
+						free(first->in);
+						free(first);
+						return item;
+					}
+				}
+			}
+
+			free(first->in);
+			free(first);
+		}
+
+		if (item->size > 0) {
+			const size_t size = item->size;
+			struct second **second = item->second;
+			for (size_t i = 0; i < size; ++i) {
+				allThemSayAlso(*second);
+				++second;
+			}
+		}
+
+		free(item->first.in);
+		free(item->second);
+		free(item->is);
+		free(item);
+		item = (struct second *) NULL;
+	}
+
+	return item;
 }
