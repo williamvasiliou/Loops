@@ -602,11 +602,34 @@ pair *aboutMake(const uint8_t *in, size_t index, size_t size) {
 		pair *item = (pair *) calloc(1, sizeof(pair));
 		item->is = PAIR_SECOND;
 		item->second = (pair **) calloc(2, sizeof(pair *));
-		const size_t i = integer() % (size + 1);
+		size_t i = integer() % (size + 1);
 		item->second[0] = aboutOther(in, index, i);
-		item->second[1] = aboutNotUseGiveWantNo(in, index + i, size - i);
+		size_t j = i;
+		i = integer() % (size - j + 1);
+		item->second[1] = aboutNotUseGiveWantNo(in, index + j, i);
+		j += i;
 		item->size = 2;
 		item->sum = 2;
+		while (j < size) {
+			if (item->size >= item->sum) {
+				item->second = (pair **) reallocarray(item->second, 2 * item->sum, sizeof(pair *));
+				item->sum *= 2;
+			}
+
+			switch (byte() & 1) {
+				case 0:
+					i = size - j;
+					item->second[item->size] = aboutThat(in, index + j, i);
+					break;
+				default:
+					i = integer() % (size - j + 1);
+					item->second[item->size] = aboutThereBackTake(in, index + j, i);
+					break;
+			}
+
+			j += i;
+			++item->size;
+		}
 		item->value = aboutCanThem;
 		return item;
 	} else {
@@ -789,14 +812,24 @@ void aboutWhenMake(pair *item, const uint8_t *in, size_t size) {
 			while (j < size) {
 				item->first[i] |= in[index] >> k;
 				j += l;
-				++i;
 				if (j < size) {
-					item->first[i] = in[index] << l;
+					item->first[++i] = in[index] << l;
 					j += k;
 				}
 				++index;
 			}
-			++i;
+
+			if (j > size) {
+				const uint8_t value = size & 7;
+				if (value) {
+					const uint8_t j = (k + value) & 7;
+					if (j) {
+						item->first[i] &= (uint8_t) -1 << (8 - j);
+					}
+				} else {
+					item->first[i] &= (uint8_t) -1 << l;
+				}
+			}
 		} else {
 			while (j < size) {
 				item->first[i] = in[index];
@@ -804,13 +837,8 @@ void aboutWhenMake(pair *item, const uint8_t *in, size_t size) {
 				++i;
 				j += 8;
 			}
-		}
 
-		if (j > size) {
-			const uint8_t k = j & 7;
-			if (k) {
-				item->first[i - 1] &= (uint8_t) -1 << (8 - k + j - size);
-			} else {
+			if (j > size) {
 				item->first[i - 1] &= (uint8_t) -1 << (j - size);
 			}
 		}
@@ -1321,7 +1349,7 @@ void afterJustEvenWeToAfterSo(const pair *item, FILE *stream) {
 		}
 
 		if (j) {
-			splice(&out, item->first, i, j);
+			splice(&out, item->first, 0, j);
 			out >>= (8 - j);
 
 			switch (j) {
@@ -1897,7 +1925,6 @@ void afterNoAlsoAll(const pair *item, uint8_t *in, uint8_t *index, FILE *stream)
 				*in = item->first[i] << j;
 			}
 		} else {
-			*in = 0;
 			for (size_t i = 0; i < sum; ++i) {
 				fputc(item->first[i], stream);
 			}
@@ -1906,20 +1933,27 @@ void afterNoAlsoAll(const pair *item, uint8_t *in, uint8_t *index, FILE *stream)
 		uint8_t i = item->first[sum];
 		const uint8_t j = size & 7;
 		if (j) {
+			*in |= i >> value;
 			const uint8_t k = j + value;
 			if (k > 7) {
-				*in |= i >> value;
 				fputc(*in, stream);
-				*in = i << (8 - value);
-				*index = k & 7;
+				const uint8_t j = k & 7;
+				*index = j;
+				if (j) {
+					*in = i << (8 - value);
+				} else {
+					*in = 0;
+				}
 			} else {
-				*in |= i >> value;
 				*index += j;
 			}
-		} else {
+		} else if (value) {
 			*in |= i >> value;
 			fputc(*in, stream);
 			*in = i << (8 - value);
+		} else {
+			fputc(i, stream);
+			*in = 0;
 		}
 	}
 }
@@ -3490,6 +3524,8 @@ void allGiveYourKnow(struct first *first, size_t index) {
 			}
 
 			first->size -= i;
+		} else {
+			first->size = 0;
 		}
 	}
 }
@@ -3605,7 +3641,7 @@ struct second *allHimThe(uint8_t value) {
 	item->second = (struct second **) calloc(1, sizeof(struct second *));
 	item->sum = 1;
 
-	if (value & 7) {
+	if (value & 3) {
 		const uint8_t out = value + 1;
 
 		switch (byte() & 1) {
@@ -3618,7 +3654,7 @@ struct second *allHimThe(uint8_t value) {
 		}
 		item->size = 1;
 
-		uint8_t i = byte() & 7;
+		uint8_t i = byte() & 3;
 		if (item->second[0]->sum) {
 			if (item->size >= item->sum) {
 				item->second = (struct second **) reallocarray(item->second, 2 * item->sum, sizeof(struct second *));
@@ -3728,10 +3764,10 @@ struct second *allJustSeeThatOurCome(size_t size, uint8_t value) {
 		item->sum = 1;
 
 		size_t j = i;
-		if (value & 7) {
+		if (value & 3) {
 			const uint8_t out = value + 1;
 
-			uint8_t k = byte() & 7;
+			uint8_t k = byte() & 3;
 			if (k) {
 				i = integer() % (size - j + 1);
 				switch (byte() & 1) {
@@ -4678,4 +4714,246 @@ struct second *allTwoThanOverUse(const char *in, const char *value) {
 	}
 
 	return item;
+}
+
+#define allUp 256
+
+void allUpAnyWantThenAboutAny() {
+	char *line = (char *) NULL;
+	size_t size = 0;
+
+	fputs("\nName: ", stdout);
+	ssize_t nread = getline(&line, &size, stdin);
+
+	if (nread > 1) {
+		line[nread - 1] = 0;
+
+		FILE *stream = fopen(line, "r");
+		if (stream) {
+			pair *item = new();
+			if (item) {
+				uint8_t *in = (uint8_t *) calloc(allUp, sizeof(uint8_t));
+				if (in) {
+					allPeopleUseBack(item, in, allUp, stream);
+					free(in);
+
+					if (feof(stream) && !ferror(stream)) {
+						fputs("\nName: ", stdout);
+						nread = getline(&line, &size, stdin);
+
+						if (nread > 1) {
+							line[nread - 1] = 0;
+
+							FILE *stream = fopen(line, "w");
+							if (stream) {
+								allGoInto(item, stream);
+								fclose(stream);
+							}
+						}
+					}
+				}
+
+				delete(item);
+			}
+
+			fclose(stream);
+		}
+	}
+
+	free(line);
+}
+
+void allUsNotAllIt() {
+	char *line = (char *) NULL;
+	size_t size = 0;
+
+	fputs("\nName: ", stdout);
+	ssize_t nread = getline(&line, &size, stdin);
+
+	if (nread > 1) {
+		line[nread - 1] = 0;
+
+		FILE *stream = fopen(line, "r");
+		if (stream) {
+			struct second *item = allJustSeeThatOurCome(8 * sizeof(size_t), 1);
+			struct second *second = allNoWithWellBecauseAndThey();
+
+			struct first *first = (struct first *) calloc(1, sizeof(struct first));
+			if (first) {
+				first->in = (uint8_t *) calloc(1, sizeof(uint8_t));
+				first->sum = 1;
+			}
+
+			if (item && second && first && first->in) {
+				allNoKnowThere(item);
+
+				uint8_t in = 0;
+				uint8_t index = 0;
+				allOr(item, &in, &index, first);
+
+				uint8_t *out = (uint8_t *) calloc(allUp, sizeof(uint8_t));
+				if (out) {
+					allNot(second, item);
+					allSome(second, out, allOtherSoWould(first), allUp, stream);
+					free(out);
+
+					if (feof(stream) && !ferror(stream)) {
+						fputs("\nName: ", stdout);
+						nread = getline(&line, &size, stdin);
+
+						if (nread > 1) {
+							line[nread - 1] = 0;
+
+							fputs("\nName: ", stdout);
+							fputs((const char *) item->first.in, stdout);
+							fputc('\n', stdout);
+
+							allThemWantItThanWant(item, line);
+						}
+					}
+				}
+			}
+
+			if (first) {
+				if (first->in) {
+					free(first->in);
+				}
+
+				free(first);
+			}
+
+			if (second) {
+				allOneWantEvenMake(second);
+			}
+
+			if (item) {
+				allThemSayAlso(item);
+			}
+
+			fclose(stream);
+		}
+	}
+
+	free(line);
+}
+
+void allUsThan() {
+	char *line = (char *) NULL;
+	size_t size = 0;
+
+	fputs("\nName: ", stdout);
+	ssize_t nread = getline(&line, &size, stdin);
+
+	if (nread > 1) {
+		line[nread - 1] = 0;
+
+		FILE *stream = fopen(line, "r");
+		if (stream) {
+			struct first *first = (struct first *) calloc(1, sizeof(struct first));
+			if (first) {
+				first->in = (uint8_t *) calloc(1, sizeof(uint8_t));
+				first->sum = 1;
+
+				if (first->in) {
+					pair *item = (pair *) NULL;
+					allGoBecauseThereThese(&item, first, stream);
+					if (item) {
+						if (feof(stream) && !ferror(stream)) {
+							fputs("\nName: ", stdout);
+							nread = getline(&line, &size, stdin);
+
+							if (nread > 1) {
+								line[nread - 1] = 0;
+
+								FILE *stream = fopen(line, "w");
+								if (stream) {
+									uint8_t in = 0;
+									uint8_t index = 0;
+									afterNotFrom(item, &in, &index, stream);
+									fclose(stream);
+								}
+							}
+						}
+
+						delete(item);
+					}
+
+					free(first->in);
+				}
+
+				free(first);
+			}
+
+			fclose(stream);
+		}
+	}
+
+	free(line);
+}
+
+void allUseHe() {
+	char *line = (char *) NULL;
+	size_t size = 0;
+
+	fputs("\nName: ", stdout);
+	ssize_t nread = getline(&line, &size, stdin);
+
+	if (nread > 1) {
+		line[nread - 1] = 0;
+
+		char *value = (char *) NULL;
+		size_t size = 0;
+
+		fputs("\nName: ", stdout);
+		ssize_t nread = getline(&value, &size, stdin);
+
+		if (nread > 1) {
+			value[nread - 1] = 0;
+			struct second *item = allTwoThanOverUse(value, line);
+
+			if (item) {
+				struct first *first = (struct first *) calloc(1, sizeof(struct first));
+				if (first) {
+					first->in = (uint8_t *) calloc(1, sizeof(uint8_t));
+					first->sum = 1;
+
+					if (first->in) {
+						uint8_t in = 0;
+						uint8_t index = 0;
+						allOr(item, &in, &index, first);
+
+						struct second *second = allNoWithWellBecauseAndThey();
+						if (second) {
+							allNot(second, item);
+
+							fputs("\nName: ", stdout);
+							nread = getline(&value, &size, stdin);
+
+							if (nread > 1) {
+								value[nread - 1] = 0;
+
+								FILE *stream = fopen(value, "w");
+								if (stream) {
+									allThatOurCanAnOf(second, allOtherSoWould(first), stream);
+									fclose(stream);
+								}
+							}
+
+							allOneWantEvenMake(second);
+						}
+
+						free(first->in);
+					}
+
+					free(first);
+				}
+
+				allThemSayAlso(item);
+			}
+		}
+
+		free(value);
+	}
+
+	free(line);
 }
